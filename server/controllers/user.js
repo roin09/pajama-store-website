@@ -2,10 +2,10 @@ const User = require("../models/User");
 
 module.exports.create = async (req, res) => {
   try {
-    const { userId, username, password } = req.body;
+    const { userId, password, info } = req.body;
 
     //새 User document 생성
-    const user = new User({ userId, username, password });
+    const user = new User({ userId, password, info });
     await user.save();
 
     return res.send(user);
@@ -84,4 +84,53 @@ module.exports.remove = async (req, res) => {
   //   return filterdArr;
   // }, filterdArr);
   // return res.send(filterdUsers);
+};
+
+module.exports.register = async (req, res) => {
+  try {
+    // Id, password 미입력
+    if (!req.body.userId)
+      return res.status(400).send({ message: "userId가 필요합니다" });
+    if (!req.body.password)
+      return res.status(400).send({ message: "password가 필요합니다" });
+    //ID 중복검사
+    const exUser = await User.findOne({ userId: req.body.userId });
+    if (exUser)
+      return res.status(409).send({ message: "이미 사용중인 아이디입니다" });
+    //document 생성
+    const user = new User({
+      userId: req.body.userId,
+      password: req.body.password,
+      info: req.body.info,
+    });
+
+    //document 저장
+    await user.save();
+    return res.send(user);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+module.exports.login = async (req, res) => {
+  try {
+    //userId 일치 document 찾기
+    const user = await User.findOne({ userId: req.body.userId });
+    if (!user)
+      return res.status(404).send({ message: "존재하지 않는 Id 입니다" });
+    if (user.password != req.body.password)
+      return res.status(409).send({ message: "비밀번호가 일치하지 않습니다" });
+    //로그인 성공
+    return res.send(user);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+module.exports.logout = async (req, res) => {
+  try {
+    return res.send();
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 };
