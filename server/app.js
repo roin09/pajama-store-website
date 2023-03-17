@@ -36,11 +36,6 @@ var cors = require("cors");
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "public/main.html"));
-});
-app.use("/", express.static(path.join(__dirname, "public")));
-
 app.get("/react", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/public/index.html"));
   res.end();
@@ -50,6 +45,10 @@ app.use(
   "/react",
   express.static(path.join(__dirname, "../client/public"), options)
 );
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "public/main.html"));
+});
+app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/user", userRouter);
 
