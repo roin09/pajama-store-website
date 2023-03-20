@@ -3,9 +3,9 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-
+var fs = require("fs");
 var indexRouter = require("./routes/index");
-
+var redis = require("redis");
 var userRouter = require("./routes/user");
 const mongoose = require("mongoose");
 require("dotenv").config();
