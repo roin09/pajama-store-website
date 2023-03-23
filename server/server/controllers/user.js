@@ -1,10 +1,4 @@
 const User = require("../models/User");
-const { promisify } = require("util");
-const jwt = require("../utils/jwt");
-// const redisClient = require("../utils/redis");
-const SECRET_KEY = process.env.SECRET_KEY;
-const redisCli = require("../utils/redis");
-const authJWT = require("../middlewares/authJWT");
 
 module.exports.create = async (req, res) => {
   try {
@@ -112,7 +106,6 @@ module.exports.register = async (req, res) => {
 
     //document 저장
     await user.save();
-
     return res.send(user);
   } catch (err) {
     return res.status(500).send(err);
@@ -125,25 +118,14 @@ module.exports.login = async (req, res) => {
     const user = await User.findOne({ userId: req.body.userId });
     if (!user)
       return res.status(404).send({ message: "존재하지 않는 Id 입니다" });
-    user.comparePassword(req.body.password, async function (err, isMatch) {
+    user.comparePassword(req.body.password, function (err, isMatch) {
       if (err) throw err;
       if (!isMatch)
         return res
           .status(409)
           .send({ message: "비밀번호가 일치하지 않습니다." });
       // 로그인 성공
-      const accessToken = jwt.sign(user);
-      const refreshToken = jwt.refresh();
-      user.accessToken = accessToken;
-      redisCli.set(user.userId, refreshToken);
-      await user.save();
-      return res.status(200).send({
-        ok: true,
-        data: {
-          accessToken,
-          refreshToken,
-        },
-      });
+      return res.send(user);
     });
   } catch (err) {
     return res.status(500).send(err);
@@ -153,26 +135,6 @@ module.exports.login = async (req, res) => {
 module.exports.logout = async (req, res) => {
   try {
     return res.send();
-  } catch (err) {
-    return res.status(500).send(err);
-  }
-};
-
-module.exports.editProfile = async (req, res) => {
-  try {
-    //req에 recoil로 전역변수 userId, header 담아 보내기
-    // req = { id: userId, headers: { Authorization: "Bearer accessToken"} }
-    const token = req.headers.authorization.split("Bearer ")[1];
-    const AuthUserObj = { id: req.body.id, token: token };
-    const userAuth = await authJWT(AuthUserObj);
-    //성공시 userAuth = {id: result.id, ok:true } 반환
-    if (userAuth.ok) {
-      //client의 privateroute access
-      return res.status(200).send({ ok: true });
-    } else {
-      //client login으로 redirect
-      return res.status(302).send({ ok: false });
-    }
   } catch (err) {
     return res.status(500).send(err);
   }

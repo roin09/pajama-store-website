@@ -11,7 +11,6 @@ const userSchema = mongoose.Schema({
     require: true,
   },
   info: String,
-  accessToken: String,
 });
 
 userSchema.pre("save", function (next) {
