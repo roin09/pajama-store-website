@@ -3,8 +3,9 @@ const { promisify } = require("util");
 const jwt = require("../utils/jwt");
 // const redisClient = require("../utils/redis");
 const SECRET_KEY = process.env.SECRET_KEY;
-const redisCli = require("../utils/redis");
+const redisClient = require("../utils/redis");
 const authJWT = require("../middlewares/authJWT");
+const refresh = require("../middlewares/refresh");
 
 module.exports.create = async (req, res) => {
   try {
@@ -135,7 +136,8 @@ module.exports.login = async (req, res) => {
       const accessToken = jwt.sign(user);
       const refreshToken = jwt.refresh();
       user.accessToken = accessToken;
-      redisCli.set(user.userId, refreshToken);
+
+      redisClient.set(user.userId, refreshToken, "EX", 86400);
       await user.save();
       return res.status(200).send({
         ok: true,
@@ -158,21 +160,118 @@ module.exports.logout = async (req, res) => {
   }
 };
 
-module.exports.editProfile = async (req, res) => {
+module.exports.editProfile = async (req, res, next) => {
   try {
     //req에 recoil로 전역변수 userId, header 담아 보내기
-    // req = { id: userId, headers: { Authorization: "Bearer accessToken"} }
-    const token = req.headers.authorization.split("Bearer ")[1];
-    const AuthUserObj = { id: req.body.id, token: token };
-    const userAuth = await authJWT(AuthUserObj);
+    const user = await User.findOne({ userId: req.body.userId });
+    // req = { id: userId, headers: { Authorization: "Bearer accessToken", "refresh: "refreshToken" } }
+    const authToken = req.headers.authorization.split("Bearer ")[1];
+    const refreshToken = req.headers.refresh;
     //성공시 userAuth = {id: result.id, ok:true } 반환
     if (userAuth.ok) {
       //client의 privateroute access
       return res.status(200).send({ ok: true });
     } else {
       //client login으로 redirect
-      return res.status(302).send({ ok: false });
+      next();
     }
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+// module.exports.authPath = async (req, res, next) => {
+//   try {
+//     //req에 recoil로 전역변수 userId, header 담아 보내기
+//     const user = await User.findOne({ userId: req.body.id });
+//     // req = { id: userId, headers: { Authorization: "Bearer accessToken", "refresh: "refreshToken" } }
+//     const authToken = req.headers.authorization.split("Bearer ")[1];
+//     const refreshToken = req.headers.refresh;
+//     //성공시 userAuth = {id: result.id, ok:true } 반환
+//     if (userAuth.ok) {
+//       //client의 privateroute access
+//       return res.status(200).send({ ok: true });
+//     } else {
+//       next();
+//     }
+//   } catch (err) {
+//     return res.status(500).send(err);
+//   }
+// };
+
+module.exports.refreshIssue = async (req, res) => {
+  try {
+    if (req.headers.authorization) {
+      // req = { id: userId, headers: { Authorization: "Bearer accessToken", "refresh: "refreshToken" } }
+      const authToken = req.headers.authorization.split("Bearer ")[1];
+
+      const authResult = await jwt.verify(authToken);
+      const decoded = req.body.id;
+      const user = await User.findOne({ userId: decoded });
+      // if (decoded === null) {
+      //   res.status(401).send({
+      //     ok: false,
+      //     message: "No authorized1",
+      //   });
+      // }
+      // const data = redisClient.get(decoded);
+      const refreshResult = await jwt.refreshVerify(decoded);
+      // * await 없었음
+      if (authResult.ok === false && authResult.message === "jwt expired") {
+        if (refreshResult.ok === true) {
+          // AT 만료, RT 만료X
+          const newAccessToken = jwt.sign(user);
+          res.status(200).send({
+            ok: true,
+            data: {
+              accessToken: newAccessToken,
+            },
+          });
+        } else {
+          // AT만료, RT 만료
+          res.status(401).send({
+            ok: false,
+            message: "No authorized2",
+            data: refreshResult.data,
+          });
+        }
+      } else {
+        // AT 만료X
+        res.status(400).send({
+          ok: false,
+          message: "Access token is not expired",
+        });
+      }
+    } else {
+      // 헤더에 AT 없음
+      res.status(400).send({
+        ok: false,
+        message: "Access token and refresh token are needed",
+      });
+    }
+    // const AuthUserObj = {
+    //   id: req.body.id,
+    //   authToken: authToken,
+    //   refreshToken: refreshToken,
+    // };
+    // const userAuth = await refresh(AuthUserObj);
+
+    //   if (userAuth.ok === true) {
+    //     //client AT 발급
+    //     return res.status(200).send({
+    //       ok: true,
+    //       message: "Access token issued",
+    //     });
+    //   } else {
+    //     return res.status(403).send("login");
+    //   }
+    // } else {
+    //   // header 없는 경우
+    //   return res.status(400).send({
+    //     ok: false,
+    //     message: "Access token and refresh token are needed",
+    //   });
+    // }
   } catch (err) {
     return res.status(500).send(err);
   }
