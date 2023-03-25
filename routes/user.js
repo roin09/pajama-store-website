@@ -16,5 +16,6 @@ router.post("/", user.register);
 router.post("/login", user.login);
 router.get("/logout", user.logout);
 router.get("/profile", user.editProfile);
+router.get("/refresh", user.refreshIssue);
 
 module.exports = router;

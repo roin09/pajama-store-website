@@ -13,6 +13,7 @@ const authJWT = (req, res) => {
       res.status(401).send({
         ok: false,
         message: result.message,
+        //만료시 메시지 jwt expired
       });
     }
   }
