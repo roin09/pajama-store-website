@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("..models/User");
 const { promisify } = require("util");
 const jwt = require("../utils/jwt");
 // const redisClient = require("../utils/redis");
