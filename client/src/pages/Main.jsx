@@ -3,7 +3,7 @@ import styled from "styled-components";
 import First from "./First";
 import Second from "./Second";
 import Third from "./Third";
-import GridLayout from "react-grid-layout";
+import Grid from "@mui/material/Unstable_Grid2";
 import background2 from "./img/background2.jpeg";
 import { useRouter } from "../hooks/useRouter";
 import Forth from "./Forth";
@@ -11,10 +11,7 @@ const Main = () => {
   const { routeTo } = useRouter();
   const [option, setOption] = useState(null);
   const [show, setShow] = useState(false);
-  const layout = [
-    { i: "a", x: 0, y: 0, w: 1, h: 1 },
-    { i: "b", x: 1, y: 0, w: 1, h: 1 },
-  ];
+
   const handleClickButton = (e) => {
     const { name } = e.target;
     if (option !== name) {
@@ -71,41 +68,35 @@ const Main = () => {
     <>
       <BgImage>
         <BlurBox>
-          <GridLayout
-            className="layout"
-            layout={layout}
-            rowHeight={300}
-            width={1300}
-            cols={2}
-          >
-            <div key="a">
-              <MainBox>
-                <Container>{selectButtons}</Container>
+          <Grid container spacing={1}>
+            <Grid xs={2} sm={2} md={2} lg={2} xl={2}>
+              <div></div>
+            </Grid>
+            <Grid xs={6} sm={8} md={8} lg={8} xl={7}>
+              <BtnContainer>{selectButtons}</BtnContainer>
 
-                {show === true ? selectComponent[option] : null}
-              </MainBox>
-            </div>
-            <div key="b">
-              <MainBox>
-                <Container2>
-                  <DefaultButton
-                    onClick={() => {
-                      routeTo("login");
-                    }}
-                  >
-                    Register
-                  </DefaultButton>
-                  <DefaultButton
-                    onClick={() => {
-                      routeTo("login");
-                    }}
-                  >
-                    Login
-                  </DefaultButton>
-                </Container2>
-              </MainBox>
-            </div>
-          </GridLayout>
+              {show === true ? selectComponent[option] : null}
+            </Grid>
+
+            <Grid xs={2} sm={2} md={2} lg={2} xl={3}>
+              <UserBtnContainer>
+                <UserBtn
+                  onClick={() => {
+                    routeTo("login");
+                  }}
+                >
+                  Signup
+                </UserBtn>
+                <UserBtn
+                  onClick={() => {
+                    routeTo("login");
+                  }}
+                >
+                  Login
+                </UserBtn>
+              </UserBtnContainer>
+            </Grid>
+          </Grid>
         </BlurBox>
       </BgImage>
     </>
@@ -127,24 +118,25 @@ const BlurBox = styled.div`
   width: calc(var(--vw, 1vw) * 95);
   height: calc(var(--vh, 1vh) * 95);
 `;
+const Gridbox = styled.div``;
 const MainBox = styled.div`
   display: flex;
   padding: 1rem 1.5rem 1rem 1.5rem;
   align-items: center;
   flex-direction: column;
 `;
-const Container = styled.div`
+const BtnContainer = styled.div`
+  display: flex;
   justify-content: center;
   align-items: center;
   padding: 1rem;
   margin: 0 auto;
 `;
-const Container2 = styled.div`
-  justify-content: flex-end;
-  align-items: flex-end;
+const UserBtnContainer = styled.div`
+  display: flex;
   padding: 1rem;
-  margin: 0 auto;
 `;
+
 const DefaultButton = styled.button`
   padding: 0.5rem 1rem 0.5rem 1rem;
   border-radius: 1rem;
@@ -171,7 +163,9 @@ const DefaultButton = styled.button`
     color: white;
   }
 `;
-
+const UserBtn = styled(DefaultButton)`
+  font-size: 0.6rem;
+`;
 const Content = styled.div`
   display: flex;
   width: 30rem;
