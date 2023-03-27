@@ -44,6 +44,7 @@ app.use(
   "/react",
   express.static(path.join(__dirname, "../client/public"), options)
 );
+
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "public/main.html"));
 });
@@ -65,6 +66,9 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+});
+app.use("*", function (req, res) {
+  express.static(path.join(__dirname, "../client/public"), options);
 });
 
 module.exports = app;
