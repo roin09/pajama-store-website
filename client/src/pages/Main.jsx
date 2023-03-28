@@ -3,11 +3,12 @@ import styled from "styled-components";
 import First from "./First";
 import Second from "./Second";
 import Third from "./Third";
-
+import Grid from "@mui/material/Unstable_Grid2";
 import background2 from "./img/background2.jpeg";
-
+import { useRouter } from "../hooks/useRouter";
 import Forth from "./Forth";
 const Main = () => {
+  const { routeTo } = useRouter();
   const [option, setOption] = useState(null);
   const [show, setShow] = useState(false);
 
@@ -67,44 +68,73 @@ const Main = () => {
     <>
       <BgImage>
         <BlurBox>
-          <MainBox>
-            <Container>{selectButtons}</Container>
-            {show === true ? selectComponent[option] : null}
-          </MainBox>
+          <Grid container spacing={1}>
+            <Grid xs={2} sm={2} md={2} lg={2} xl={2}>
+              <div></div>
+            </Grid>
+            <Grid xs={6} sm={8} md={8} lg={8} xl={7}>
+              <BtnContainer>{selectButtons}</BtnContainer>
+
+              {show === true ? selectComponent[option] : null}
+            </Grid>
+
+            <Grid xs={2} sm={2} md={2} lg={2} xl={3}>
+              <UserBtnContainer>
+                <UserBtn
+                  onClick={() => {
+                    routeTo("login");
+                  }}
+                >
+                  Signup
+                </UserBtn>
+                <UserBtn
+                  onClick={() => {
+                    routeTo("login");
+                  }}
+                >
+                  Login
+                </UserBtn>
+              </UserBtnContainer>
+            </Grid>
+          </Grid>
         </BlurBox>
       </BgImage>
     </>
   );
 };
 const BgImage = styled.div`
-  width: calc(var(--vw, 1vw) * 100);
-  height: calc(var(--vh, 1vh) * 100);
   background-image: url(${background2});
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-
+  width: calc(var(--vw, 1vw) * 100);
+  height: calc(var(--vh, 1vh) * 100);
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 const BlurBox = styled.div`
   backdrop-filter: blur(10px);
+  width: calc(var(--vw, 1vw) * 95);
+  height: calc(var(--vh, 1vh) * 95);
 `;
+const Gridbox = styled.div``;
 const MainBox = styled.div`
   display: flex;
-  width: calc(var(--vw, 1vw) * 90);
-  height: calc(var(--vh, 1vh) * 90);
   padding: 1rem 1.5rem 1rem 1.5rem;
   align-items: center;
   flex-direction: column;
 `;
-const Container = styled.div`
-  display: inline-flex;
+const BtnContainer = styled.div`
+  display: flex;
   justify-content: center;
   align-items: center;
   padding: 1rem;
   margin: 0 auto;
+`;
+const UserBtnContainer = styled.div`
+  display: flex;
+  padding: 1rem;
 `;
 
 const DefaultButton = styled.button`
@@ -133,7 +163,9 @@ const DefaultButton = styled.button`
     color: white;
   }
 `;
-
+const UserBtn = styled(DefaultButton)`
+  font-size: 0.6rem;
+`;
 const Content = styled.div`
   display: flex;
   width: 30rem;
