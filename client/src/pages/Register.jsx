@@ -25,7 +25,8 @@ const Register = () => {
       userRegister(data).then(async (res) => {
         if (res.status === 200) {
           await setSaveInfo("success");
-          navigate("/react");
+          alert("test");
+          // navigate("/react");
         } else {
           alert("check your ID or password");
         }
@@ -37,7 +38,7 @@ const Register = () => {
   const handleUserId = register("userId", {
     required: { value: true, message: "please enter your ID" },
     pattern: {
-      value: process.env.REACTAPPNAME_REGEX,
+      value: process.env.REACT_APP_NAME_REGEX,
       message: "wrong ID pattern",
     },
   });
@@ -45,7 +46,7 @@ const Register = () => {
   const handlePassword = register("password", {
     required: { value: true, message: "please enter your password" },
     pattern: {
-      value: process.env.REACTAPPPASSWORD_REGEX,
+      value: process.env.REACT_APP_PASSWORD_REGEX,
       message: "wrong password pattern",
     },
   });
