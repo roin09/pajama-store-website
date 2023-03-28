@@ -30,8 +30,13 @@ redisClient.on("error", (err) => {
 });
 
 redisClient.connect().then();
-
-module.exports = redisClient;
+const setKey = async (key, value, num) => {
+  await redisClient.set(key, value, "EX", num);
+};
+const getKey = async (key) => {
+  return await redisClient.get(key);
+};
+module.exports = { redisClient, setKey, getKey };
 
 // const Redis = require("ioredis");
 

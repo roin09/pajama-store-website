@@ -6,10 +6,10 @@ import background2 from "./img/background2.jpeg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { saveAccessToken } from "../utils/AccessTokenHandler";
-
+import { useCookies } from "react-cookie";
 const Login = () => {
   const navigate = useNavigate();
-
+  const [cookies, setCookie] = useCookies(["refresh_cookie"]);
   const {
     register,
     handleSubmit,
@@ -24,9 +24,10 @@ const Login = () => {
     try {
       const loginResult = await userLogin(data);
       if (loginResult) {
-        const token = loginResult.data.data.accessToken;
-        saveAccessToken(token);
-        console.log(token);
+        const access_token = loginResult.data.data.accessToken;
+        const refresh_token = loginResult.data.data.refreshToken;
+        await saveAccessToken(access_token);
+        setCookie("refresh_cookie", refresh_token, { path: "/" });
       }
 
       return alert("success");

@@ -52,8 +52,10 @@ module.exports = {
     try {
       // try 바깥에서 const ~ 선언이었음
       // async (userId), await getAsync 였음
-      const getAsync = promisify(redisClient.get).bind(redisClient);
+
+      const getAsync = promisify(redisClient.getKey).bind(redisClient);
       const data = getAsync(userId);
+
       if (data) {
         // RT 있음
         return {

@@ -137,7 +137,7 @@ module.exports.login = async (req, res) => {
       const refreshToken = jwt.refresh();
       user.accessToken = accessToken;
 
-      redisClient.set(user.userId, refreshToken, "EX", 86400);
+      redisClient.setKey(user.userId, refreshToken, "EX", 86400);
       await user.save();
       return res.status(200).send({
         ok: true,
@@ -204,8 +204,9 @@ module.exports.refreshIssue = async (req, res) => {
     if (req.headers.authorization) {
       // req = { id: userId, headers: { Authorization: "Bearer accessToken", "refresh: "refreshToken" } }
       const authToken = req.headers.authorization.split("Bearer ")[1];
-
+      const refToken = req.body.refreshToken;
       const authResult = await jwt.verify(authToken);
+
       const decoded = req.body.id;
       const user = await User.findOne({ userId: decoded });
       // if (decoded === null) {
@@ -214,17 +215,20 @@ module.exports.refreshIssue = async (req, res) => {
       //     message: "No authorized1",
       //   });
       // }
-      // const data = redisClient.get(decoded);
+
       const refreshResult = await jwt.refreshVerify(decoded);
+
       // * await 없었음
       if (authResult.ok === false && authResult.message === "jwt expired") {
         if (refreshResult.ok === true) {
           // AT 만료, RT 만료X
+
           const newAccessToken = jwt.sign(user);
           res.status(200).send({
             ok: true,
             data: {
               accessToken: newAccessToken,
+              result: refreshResult,
             },
           });
         } else {
