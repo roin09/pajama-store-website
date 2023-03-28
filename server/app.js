@@ -35,19 +35,30 @@ var cors = require("cors");
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-const options = { etag: false };
-app.use(express.static(path.join(__dirname, "../client/build")));
-
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
+const options = { maxAge: "1d", immutable: true };
 
 app.use("/user", userRouter);
-
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+app.get("/react", function (req, res) {
+  res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
+
+app.use(
+  "/react",
+  express.static(path.join(__dirname, "../client/public"), options)
+);
+
+// app.get("/", function (req, res) {
+//   res.sendFile(path.join(__dirname, "../client/build/index.html"), options);
+// });
+// app.use(express.static(path.join(__dirname, "../client/build"), options));
+
+// app.get("*", function (req, res) {
+//   res.sendFile(path.join(__dirname, "../client/build/index.html"));
+// });
 // catch 404 and forward to error handler
+app.use("*", function (req, res) {
+  express.static(path.join(__dirname, "../client/public"), options);
+});
 app.use(function (req, res, next) {
   next(createError(404));
 });
@@ -61,9 +72,6 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
-});
-app.use("*", function (req, res) {
-  express.static(path.join(__dirname, "../client/public"), options);
 });
 
 module.exports = app;
