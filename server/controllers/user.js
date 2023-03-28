@@ -114,7 +114,7 @@ module.exports.register = async (req, res) => {
     //document 저장
     await user.save();
 
-    return res.send(user);
+    return res.status(200).send(user);
   } catch (err) {
     return res.status(500).send(err);
   }
