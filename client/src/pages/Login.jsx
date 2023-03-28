@@ -22,14 +22,14 @@ const Login = () => {
   });
   const onSubmit = async (data) => {
     try {
-      userLogin(data).then(async (res) => {
-        if (res.status === 200) {
-          await saveAccessToken(res.data.accessToken);
-          navigate("/react");
-        } else {
-          alert("check your ID or password");
-        }
-      });
+      const loginResult = await userLogin(data);
+      if (loginResult) {
+        const token = loginResult.data.data.accessToken;
+        saveAccessToken(token);
+        console.log(token);
+      }
+
+      return alert("success");
     } catch (err) {
       return err;
     }
@@ -37,7 +37,7 @@ const Login = () => {
   const handleUserId = register("userId", {
     required: { value: true, message: "please enter your ID" },
     pattern: {
-      value: process.env.REACTAPPNAME_REGEX,
+      value: process.env.REACT_APP_NAME_REGEX,
       message: "wrong ID pattern",
     },
   });
@@ -45,7 +45,7 @@ const Login = () => {
   const handlePassword = register("password", {
     required: { value: true, message: "please enter your password" },
     pattern: {
-      value: process.env.REACTAPPPASSWORD_REGEX,
+      value: process.env.REACT_APP_PASSWORD_REGEX,
       message: "wrong password pattern",
     },
   });

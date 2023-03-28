@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "init": "cd client && npm install && cd server && npm install",
-    "client": "cd client && npm run start",
-    "server": "cd server && npm start",
+    "client": "npx kill-port 3000 && cd client && npm run start",
+    "server": "npx kill-port 4000 && cd server && npm start",
     "dev": "concurrently -k \"yarn run server\" \"yarn run client\""
   },
   "dependencies": {
