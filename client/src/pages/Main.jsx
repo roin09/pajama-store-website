@@ -82,7 +82,7 @@ const Main = () => {
               <UserBtnContainer>
                 <UserBtn
                   onClick={() => {
-                    routeTo("register");
+                    routeTo("login");
                   }}
                 >
                   Signup

@@ -1,6 +1,5 @@
 import "./App.css";
-import { RouterProvider } from "react-router-dom";
-import { routers } from "./router";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Main from "./pages/Main";
 import { useEffect } from "react";
 
@@ -16,7 +15,11 @@ const App = () => {
   });
   return (
     <>
-      <RouterProvider router={routers} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/react" element={<Main />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 };
