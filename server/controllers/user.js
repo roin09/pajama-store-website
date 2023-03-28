@@ -3,9 +3,10 @@ const { promisify } = require("util");
 const jwt = require("../utils/jwt");
 // const redisClient = require("../utils/redis");
 const SECRET_KEY = process.env.SECRET_KEY;
-const redisClient = require("../utils/redis");
+
 const authJWT = require("../middlewares/authJWT");
 const refresh = require("../middlewares/refresh");
+var { setRedisAsync, getRedisAsync } = require("../utils/redis");
 
 module.exports.create = async (req, res) => {
   try {
@@ -137,7 +138,7 @@ module.exports.login = async (req, res) => {
       const refreshToken = jwt.refresh();
       user.accessToken = accessToken;
 
-      redisClient.setKey(user.userId, refreshToken, "EX", 86400);
+      await setRedisAsync(user.userId, refreshToken, 86400);
       await user.save();
       return res.status(200).send({
         ok: true,
@@ -216,11 +217,11 @@ module.exports.refreshIssue = async (req, res) => {
       //   });
       // }
 
-      const refreshResult = await jwt.refreshVerify(decoded);
-
+      // const refreshResult = await jwt.refreshVerify(decoded);
+      const refreshResult = getRedisAsync(decoded);
       // * await 없었음
       if (authResult.ok === false && authResult.message === "jwt expired") {
-        if (refreshResult.ok === true) {
+        if (refreshResult) {
           // AT 만료, RT 만료X
 
           const newAccessToken = jwt.sign(user);
@@ -276,6 +277,16 @@ module.exports.refreshIssue = async (req, res) => {
     //     message: "Access token and refresh token are needed",
     //   });
     // }
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+module.exports.redistest = async (req, res) => {
+  try {
+    const decoded = req.body.id;
+    getRedisAsync(decoded, (err, result) => {
+      console.log(result);
+    });
   } catch (err) {
     return res.status(500).send(err);
   }
