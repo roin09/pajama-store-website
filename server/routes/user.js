@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const user = require("../controllers/user");
-
+const redis = require("../utils/redis");
 //create user
 // router.post("/", user.create);
 
@@ -29,6 +29,6 @@ router.post("/", user.register);
 router.post("/login", user.login);
 router.get("/logout", user.logout);
 router.get("/profile", user.editProfile);
-router.get("/refresh", user.refreshIssue);
+router.get("/refresh", redis.refreshVerify, user.redistest);
 router.get("/redistest", user.redistest);
 module.exports = router;

@@ -75,29 +75,74 @@
 // };
 
 // module.exports = { getRedisAsync, setRedisAsync, onConnectCallback };
+const express = require("express");
+const { promisify } = require("util");
+const dotenv = require("dotenv");
+const jwt = require("./jwt");
 const redis = require("redis");
 const { createClient } = require("redis");
+dotenv.config();
 
 const client = createClient({
   url: `redis://127.0.0.1:6379`,
   legacyMode: true,
 });
 (async () => {
+  client.on("connect", () => {
+    console.info("Redis connected!");
+  });
+  client.on("error", (err) => {
+    console.error("Redis Client Error", err);
+  });
   await client.connect();
 
   // using callbacks
-  client.set("key", "value", (err) => {
-    if (err) return err;
+  // client.set("key", "value", (err) => {
+  //   if (err) return err;
 
-    client.get("key", (err, value) => {
-      if (err) return console.error(err);
+  //   client.get("key", (err, value) => {
+  //     if (err) return console.error(err);
 
-      return value; // should log 'value'
-    });
-  });
+  //     return value; // should log 'value'
+  //   });
+  // });
 
   // using promises
-  await client.v4.set("key", "value");
-  console.log(await client.v4.get("key")); // should log 'value'
+  // await client.v4.set("key", "value");
+  // console.log(await client.v4.get("key")); // should log 'value'
 })();
-module.exports = client;
+module.exports = {
+  refreshVerify: async (req, res, next) => {
+    if (req.headers.authorization) {
+      const authToken = req.headers.authorization.split("Bearer ")[1];
+      const userId = req.body.id;
+      const authResult = jwt.verify(authToken);
+      // const refreshResult = client.get(userId, (err, value) => {
+      //   if (err) return err;
+      //   return value; // should log 'value'
+      // });
+      const getAsync = promisify(client.get).bind(client);
+      const refreshResult = await getAsync(userId);
+      if (authResult.ok === false && authResult.message === "jwt expired") {
+        if (refreshResult) {
+          req.data = refreshResult;
+          next();
+        }
+      } else {
+        res.status(400).send({
+          ok: false,
+          message: "Access token is not expired",
+        });
+      }
+    } else {
+      res.status(400).send({
+        ok: false,
+        message: "Access token and refresh token are needed",
+      });
+    }
+  },
+
+  setRefresh: (key, value, num) => {
+    client.set(key, value, "EX", num);
+  },
+};

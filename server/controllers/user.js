@@ -7,7 +7,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const authJWT = require("../middlewares/authJWT");
 const refresh = require("../middlewares/refresh");
 var { setRedisAsync, getRedisAsync } = require("../utils/redis");
-
+const redis = require("../utils/redis");
 module.exports.create = async (req, res) => {
   try {
     const { userId, password, info } = req.body;
@@ -138,7 +138,7 @@ module.exports.login = async (req, res) => {
       const refreshToken = jwt.refresh();
       user.accessToken = accessToken;
 
-      await setRedisAsync(user.userId, refreshToken, 86400);
+      await redis.setRefresh(user.userId, refreshToken, 86400);
       await user.save();
       return res.status(200).send({
         ok: true,
@@ -283,10 +283,7 @@ module.exports.refreshIssue = async (req, res) => {
 };
 module.exports.redistest = async (req, res) => {
   try {
-    const decoded = req.body.id;
-    getRedisAsync(decoded, (err, result) => {
-      console.log(result);
-    });
+    res.send(`${req.data}`);
   } catch (err) {
     return res.status(500).send(err);
   }
