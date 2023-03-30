@@ -285,8 +285,9 @@ module.exports.refreshAuth = async (req, res) => {
   try {
     const user = await User.findOne({ userId: req.data });
     const newAccessToken = jwt.sign(user);
-    res.status(200).send({
+    res.status(201).send({
       ok: true,
+      message: "new access token is issued",
       data: {
         accessToken: newAccessToken,
       },

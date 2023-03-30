@@ -128,10 +128,15 @@ module.exports = {
         if (refreshResult === userRefreshToken) {
           req.data = userId;
           next();
+        } else {
+          res.status(401).send({
+            ok: false,
+            message: "Invalid Token",
+          });
         }
       } else {
-        res.status(400).send({
-          ok: false,
+        res.status(200).send({
+          ok: true,
           message: "Access token is not expired",
         });
       }
