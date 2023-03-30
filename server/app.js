@@ -2,12 +2,28 @@ var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
+var bodyparser = require("body-parser");
 var logger = require("morgan");
 var fs = require("fs");
-
+const redis = require("./utils/redis");
 var userRouter = require("./routes/user");
 const mongoose = require("mongoose");
 require("dotenv").config();
+// const redis = require("redis");
+// require("dotenv").config();
+
+// (async () => {
+//   const client = redis.createClient();
+
+//   client.on("error", (err) => console.log("Redis Client Error", err));
+
+//   await client.connect();
+
+//   await client.set("key", "value");
+//   console.log("Redis Connected!");
+//   const value = await client.get("key");
+//   console.log(value);
+// })();
 
 var app = express();
 const port = process.env.PORT || 4000;
@@ -35,6 +51,8 @@ var cors = require("cors");
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
 const options = { maxAge: "1d", immutable: true };
 
 app.use("/user", userRouter);
