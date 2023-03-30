@@ -281,7 +281,7 @@ module.exports.refreshIssue = async (req, res) => {
     return res.status(500).send(err);
   }
 };
-module.exports.redistest = async (req, res) => {
+module.exports.refreshAuth = async (req, res) => {
   try {
     const user = await User.findOne({ userId: req.data });
     const newAccessToken = jwt.sign(user);
