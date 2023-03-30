@@ -116,6 +116,7 @@ module.exports = {
     if (req.headers.authorization) {
       const authToken = req.headers.authorization.split("Bearer ")[1];
       const userId = req.body.id;
+      const userRefreshToken = req.body.refreshToken;
       const authResult = jwt.verify(authToken);
       // const refreshResult = client.get(userId, (err, value) => {
       //   if (err) return err;
@@ -124,8 +125,8 @@ module.exports = {
       const getAsync = promisify(client.get).bind(client);
       const refreshResult = await getAsync(userId);
       if (authResult.ok === false && authResult.message === "jwt expired") {
-        if (refreshResult) {
-          req.data = refreshResult;
+        if (refreshResult === userRefreshToken) {
+          req.data = userId;
           next();
         }
       } else {

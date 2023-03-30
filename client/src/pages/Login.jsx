@@ -1,15 +1,16 @@
 import Grid from "@mui/material/Unstable_Grid2";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import { userLogin } from "../api/userInfo";
+import { userAuth, userLogin } from "../api/userInfo";
 import background2 from "./img/background2.jpeg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { saveAccessToken } from "../utils/AccessTokenHandler";
-import { useCookies } from "react-cookie";
+import { getCookie, setCookie } from "../api/cookies";
+
 const Login = () => {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["refresh_cookie"]);
+
   const {
     register,
     handleSubmit,
@@ -20,6 +21,15 @@ const Login = () => {
       password: "",
     },
   });
+
+  const testAuth = async () => {
+    const refreshToken = await getCookie("refresh_cookie");
+    const data = { id: "test4", refreshToken: refreshToken };
+    const authResult = await userAuth(data);
+    const new_access_token = authResult.data.data.accessToken;
+    await saveAccessToken(new_access_token);
+    return console.log(new_access_token);
+  };
   const onSubmit = async (data) => {
     try {
       const loginResult = await userLogin(data);
@@ -27,7 +37,7 @@ const Login = () => {
         const access_token = loginResult.data.data.accessToken;
         const refresh_token = loginResult.data.data.refreshToken;
         await saveAccessToken(access_token);
-        setCookie("refresh_cookie", refresh_token, { path: "/" });
+        await setCookie("refresh_cookie", String(refresh_token));
       }
 
       return alert("success");
@@ -84,6 +94,7 @@ const Login = () => {
                 </div>
                 <InputBtn disabled={isSubmitting}>Login</InputBtn>
               </form>
+              <InputBtn onClick={testAuth}>Cookie Test</InputBtn>
             </InputDiv>
           </Grid>
         </Grid>

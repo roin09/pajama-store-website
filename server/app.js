@@ -2,6 +2,7 @@ var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
+var bodyparser = require("body-parser");
 var logger = require("morgan");
 var fs = require("fs");
 const redis = require("./utils/redis");
@@ -50,6 +51,8 @@ var cors = require("cors");
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
 const options = { maxAge: "1d", immutable: true };
 
 app.use("/user", userRouter);

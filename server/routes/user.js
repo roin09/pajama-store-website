@@ -29,6 +29,6 @@ router.post("/", user.register);
 router.post("/login", user.login);
 router.get("/logout", user.logout);
 router.get("/profile", user.editProfile);
-router.get("/refresh", redis.refreshVerify, user.redistest);
+router.post("/refresh", redis.refreshVerify, user.redistest);
 router.get("/redistest", user.redistest);
 module.exports = router;

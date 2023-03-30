@@ -283,7 +283,14 @@ module.exports.refreshIssue = async (req, res) => {
 };
 module.exports.redistest = async (req, res) => {
   try {
-    res.send(`${req.data}`);
+    const user = await User.findOne({ userId: req.data });
+    const newAccessToken = jwt.sign(user);
+    res.status(200).send({
+      ok: true,
+      data: {
+        accessToken: newAccessToken,
+      },
+    });
   } catch (err) {
     return res.status(500).send(err);
   }
