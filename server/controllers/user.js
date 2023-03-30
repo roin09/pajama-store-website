@@ -3,10 +3,11 @@ const { promisify } = require("util");
 const jwt = require("../utils/jwt");
 // const redisClient = require("../utils/redis");
 const SECRET_KEY = process.env.SECRET_KEY;
-const redisClient = require("../utils/redis");
+
 const authJWT = require("../middlewares/authJWT");
 const refresh = require("../middlewares/refresh");
-
+var { setRedisAsync, getRedisAsync } = require("../utils/redis");
+const redis = require("../utils/redis");
 module.exports.create = async (req, res) => {
   try {
     const { userId, password, info } = req.body;
@@ -137,7 +138,7 @@ module.exports.login = async (req, res) => {
       const refreshToken = jwt.refresh();
       user.accessToken = accessToken;
 
-      redisClient.set(user.userId, refreshToken, "EX", 86400);
+      await redis.setRefresh(user.userId, refreshToken, 86400);
       await user.save();
       return res.status(200).send({
         ok: true,
@@ -204,8 +205,9 @@ module.exports.refreshIssue = async (req, res) => {
     if (req.headers.authorization) {
       // req = { id: userId, headers: { Authorization: "Bearer accessToken", "refresh: "refreshToken" } }
       const authToken = req.headers.authorization.split("Bearer ")[1];
-
+      const refToken = req.body.refreshToken;
       const authResult = await jwt.verify(authToken);
+
       const decoded = req.body.id;
       const user = await User.findOne({ userId: decoded });
       // if (decoded === null) {
@@ -214,17 +216,20 @@ module.exports.refreshIssue = async (req, res) => {
       //     message: "No authorized1",
       //   });
       // }
-      // const data = redisClient.get(decoded);
-      const refreshResult = await jwt.refreshVerify(decoded);
+
+      // const refreshResult = await jwt.refreshVerify(decoded);
+      const refreshResult = getRedisAsync(decoded);
       // * await 없었음
       if (authResult.ok === false && authResult.message === "jwt expired") {
-        if (refreshResult.ok === true) {
+        if (refreshResult) {
           // AT 만료, RT 만료X
+
           const newAccessToken = jwt.sign(user);
           res.status(200).send({
             ok: true,
             data: {
               accessToken: newAccessToken,
+              result: refreshResult,
             },
           });
         } else {
@@ -272,6 +277,20 @@ module.exports.refreshIssue = async (req, res) => {
     //     message: "Access token and refresh token are needed",
     //   });
     // }
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+module.exports.refreshAuth = async (req, res) => {
+  try {
+    const user = await User.findOne({ userId: req.data });
+    const newAccessToken = jwt.sign(user);
+    res.status(200).send({
+      ok: true,
+      data: {
+        accessToken: newAccessToken,
+      },
+    });
   } catch (err) {
     return res.status(500).send(err);
   }
