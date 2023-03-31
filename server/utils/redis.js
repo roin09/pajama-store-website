@@ -151,4 +151,9 @@ module.exports = {
   setRefresh: (key, value, num) => {
     client.set(key, value, "EX", num);
   },
+  getRefresh: async (userId) => {
+    const getAsync = promisify(client.get).bind(client);
+    const refreshResult = await getAsync(userId);
+    return refreshResult;
+  },
 };

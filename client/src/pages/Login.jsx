@@ -37,17 +37,17 @@ const Login = () => {
     // -> 그 외 /login path로 navigate
     return console.log("Invalid user");
   };
-  const onSubmit = async (data) => {
+  const onSubmit = async (userData) => {
     try {
-      const loginResult = await userLogin(data);
+      const loginResult = await userLogin(userData);
       if (loginResult) {
         const access_token = loginResult.data.data.accessToken;
-        const refresh_token = loginResult.data.data.refreshToken;
+
         await saveAccessToken(access_token);
-        await setCookie("refresh_cookie", String(refresh_token));
+        return alert("success");
       }
 
-      return alert("success");
+      return console.log(userData);
     } catch (err) {
       return err;
     }
