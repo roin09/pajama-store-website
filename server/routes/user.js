@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const user = require("../controllers/user");
 const redis = require("../utils/redis");
+const cookies = require("../utils/cookies");
 //create user
 // router.post("/", user.create);
 
@@ -26,7 +27,7 @@ const redis = require("../utils/redis");
 // // module.exports = redis;
 
 router.post("/", user.register);
-router.post("/login", user.login);
+router.post("/login", user.login, cookies.setCookie);
 router.get("/logout", user.logout);
 router.get("/profile", user.editProfile);
 router.post("/refresh", redis.refreshVerify, user.refreshAuth);
