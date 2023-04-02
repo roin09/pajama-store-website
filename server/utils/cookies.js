@@ -19,6 +19,7 @@ module.exports = {
       ok: true,
       data: {
         accessToken: req.access_token,
+        id: req.user_id,
       },
     });
   },

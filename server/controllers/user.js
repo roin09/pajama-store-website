@@ -124,6 +124,7 @@ module.exports.register = async (req, res) => {
 module.exports.login = async (req, res, next) => {
   try {
     //userId 일치 document 찾기
+
     const user = await User.findOne({ userId: req.body.userId });
     if (!user)
       return res.status(404).send({ message: "존재하지 않는 Id 입니다" });
@@ -142,6 +143,7 @@ module.exports.login = async (req, res, next) => {
       await user.save();
       req.access_token = accessToken;
       req.refresh_token = refreshToken;
+      req.user_id = user.userId;
       next();
     });
   } catch (err) {

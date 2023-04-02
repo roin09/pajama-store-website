@@ -7,10 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { saveAccessToken } from "../utils/AccessTokenHandler";
 import { getCookie, setCookie } from "../api/cookies";
-
+import { useRecoilState } from "recoil";
+import loginState from "../atom/loginState";
+import userIdState from "../atom/userIdState";
+import { useRouter } from "../hooks/useRouter";
 const Login = () => {
   const navigate = useNavigate();
-
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
+  const [userId, setUserId] = useRecoilState(userIdState);
   const {
     register,
     handleSubmit,
@@ -21,7 +25,7 @@ const Login = () => {
       password: "",
     },
   });
-
+  const { routeTo } = useRouter();
   const testAuth = async () => {
     const refreshToken = await getCookie("refresh_cookie");
     const data = { id: "test4", refreshToken: refreshToken };
@@ -42,12 +46,22 @@ const Login = () => {
       const loginResult = await userLogin(userData);
       if (loginResult) {
         const access_token = loginResult.data.data.accessToken;
-
+        const memberId = loginResult.data.data.id;
+        setIsLogin(true);
+        setUserId(memberId);
         await saveAccessToken(access_token);
         return alert("success");
       }
 
       return console.log(userData);
+    } catch (err) {
+      return err;
+    }
+  };
+
+  const navPrivate = async () => {
+    try {
+      routeTo("/react/auth");
     } catch (err) {
       return err;
     }
@@ -102,6 +116,7 @@ const Login = () => {
                 <InputBtn disabled={isSubmitting}>Login</InputBtn>
               </form>
               <InputBtn onClick={testAuth}>Cookie Test</InputBtn>
+              <InputBtn onClick={navPrivate}>Auth Test</InputBtn>
             </InputDiv>
           </Grid>
         </Grid>
