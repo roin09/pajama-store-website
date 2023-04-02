@@ -3,7 +3,7 @@ const { promisify } = require("util");
 const jwt = require("../utils/jwt");
 // const redisClient = require("../utils/redis");
 const SECRET_KEY = process.env.SECRET_KEY;
-
+const cookie = require("../utils/cookies");
 const authJWT = require("../middlewares/authJWT");
 const refresh = require("../middlewares/refresh");
 var { setRedisAsync, getRedisAsync } = require("../utils/redis");
@@ -121,7 +121,7 @@ module.exports.register = async (req, res) => {
   }
 };
 
-module.exports.login = async (req, res) => {
+module.exports.login = async (req, res, next) => {
   try {
     //userId 일치 document 찾기
     const user = await User.findOne({ userId: req.body.userId });
@@ -135,18 +135,14 @@ module.exports.login = async (req, res) => {
           .send({ message: "비밀번호가 일치하지 않습니다." });
       // 로그인 성공
       const accessToken = jwt.sign(user);
-      const refreshToken = jwt.refresh();
+      const refreshToken = await jwt.refresh();
       user.accessToken = accessToken;
 
       await redis.setRefresh(user.userId, refreshToken, 86400);
       await user.save();
-      return res.status(200).send({
-        ok: true,
-        data: {
-          accessToken,
-          refreshToken,
-        },
-      });
+      req.access_token = accessToken;
+      req.refresh_token = refreshToken;
+      next();
     });
   } catch (err) {
     return res.status(500).send(err);
@@ -285,8 +281,9 @@ module.exports.refreshAuth = async (req, res) => {
   try {
     const user = await User.findOne({ userId: req.data });
     const newAccessToken = jwt.sign(user);
-    res.status(200).send({
+    res.status(201).send({
       ok: true,
+      message: "new access token is issued",
       data: {
         accessToken: newAccessToken,
       },

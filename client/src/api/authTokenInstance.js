@@ -9,6 +9,7 @@ const createAuthTokenInstance = (options) => {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    withCredentials: true,
   };
   const tokenInstance = axios.create(newOptions);
 

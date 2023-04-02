@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var bodyparser = require("body-parser");
 var logger = require("morgan");
 var fs = require("fs");
+var cors = require("cors");
 const redis = require("./utils/redis");
 var userRouter = require("./routes/user");
 const mongoose = require("mongoose");
@@ -47,12 +48,17 @@ app.set("view engine", "jade");
 
 app.use(logger("dev"));
 app.use(express.json());
-var cors = require("cors");
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true, // 모든 출처 허용 옵션. true 를 써도 된다.
+  })
+);
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(bodyparser.urlencoded({ extended: false }));
-app.use(bodyparser.json());
+
 const options = { maxAge: "1d", immutable: true };
 
 app.use("/user", userRouter);

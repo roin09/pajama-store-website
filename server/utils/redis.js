@@ -128,10 +128,15 @@ module.exports = {
         if (refreshResult === userRefreshToken) {
           req.data = userId;
           next();
+        } else {
+          res.status(401).send({
+            ok: false,
+            message: "Invalid Token",
+          });
         }
       } else {
-        res.status(400).send({
-          ok: false,
+        res.status(200).send({
+          ok: true,
           message: "Access token is not expired",
         });
       }
@@ -145,5 +150,10 @@ module.exports = {
 
   setRefresh: (key, value, num) => {
     client.set(key, value, "EX", num);
+  },
+  getRefresh: async (userId) => {
+    const getAsync = promisify(client.get).bind(client);
+    const refreshResult = await getAsync(userId);
+    return refreshResult;
   },
 };

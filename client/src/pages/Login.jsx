@@ -26,21 +26,28 @@ const Login = () => {
     const refreshToken = await getCookie("refresh_cookie");
     const data = { id: "test4", refreshToken: refreshToken };
     const authResult = await userAuth(data);
-    const new_access_token = authResult.data.data.accessToken;
-    await saveAccessToken(new_access_token);
-    return console.log(new_access_token);
+    if (authResult.status === 201) {
+      const new_access_token = authResult.data.data.accessToken;
+      await saveAccessToken(new_access_token);
+      return console.log("access token saved");
+    } else if (authResult.status === 200) {
+      return console.log("access token is valid");
+    }
+    // <- status 200, 201 session storage에 auth user 저장
+    // -> 그 외 /login path로 navigate
+    return console.log("Invalid user");
   };
-  const onSubmit = async (data) => {
+  const onSubmit = async (userData) => {
     try {
-      const loginResult = await userLogin(data);
+      const loginResult = await userLogin(userData);
       if (loginResult) {
         const access_token = loginResult.data.data.accessToken;
-        const refresh_token = loginResult.data.data.refreshToken;
+
         await saveAccessToken(access_token);
-        await setCookie("refresh_cookie", String(refresh_token));
+        return alert("success");
       }
 
-      return alert("success");
+      return console.log(userData);
     } catch (err) {
       return err;
     }
