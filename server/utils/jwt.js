@@ -11,7 +11,7 @@ module.exports = {
     //access token 발급
     const privateKey = process.env.SECRET_KEY;
     const payload = {
-      id: user.userId,
+      userId: user.userId,
     };
 
     return jwt.sign(payload, privateKey, {
@@ -23,12 +23,9 @@ module.exports = {
     try {
       const privateKey = process.env.SECRET_KEY;
       const decoded = jwt.verify(token, privateKey);
-      const result = decoded.id;
-      if (result) {
-        return {
-          ok: true,
-          id: result,
-        };
+
+      if (decoded) {
+        return { ok: true, message: err.message };
       } else {
         return { ok: false, message: err.message };
       }

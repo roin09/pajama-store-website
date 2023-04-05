@@ -31,12 +31,12 @@ export const userLogin = async (userdata) => {
   }
 };
 
-export const userAuth = async (userdata) => {
+export const userAuth = async (userId) => {
   const url = "/user/refresh";
 
   const Instance = createAuthTokenInstance();
   try {
-    const authRes = await Instance.post(url, userdata);
+    const authRes = await Instance.post(url, userId);
 
     return authRes;
   } catch (err) {
