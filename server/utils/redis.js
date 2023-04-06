@@ -81,6 +81,7 @@ const dotenv = require("dotenv");
 const jwt = require("./jwt");
 const redis = require("redis");
 const { createClient } = require("redis");
+const cookies = require("./cookies");
 dotenv.config();
 
 const client = createClient({
@@ -115,23 +116,24 @@ module.exports = {
   refreshVerify: async (req, res, next) => {
     if (req.headers.authorization) {
       const authToken = req.headers.authorization.split("Bearer ")[1];
-      const userId = req.body.id;
-      const userRefreshToken = req.body.refreshToken;
+      const userId = req.userId;
+      const userRefreshToken = req.refresh_cookie;
       const authResult = jwt.verify(authToken);
+      console.log(userId);
       // const refreshResult = client.get(userId, (err, value) => {
       //   if (err) return err;
       //   return value; // should log 'value'
       // });
       const getAsync = promisify(client.get).bind(client);
       const refreshResult = await getAsync(userId);
-      if (authResult.ok === false && authResult.message === "jwt expired") {
+      if (authResult.message === "jwt expired") {
         if (refreshResult === userRefreshToken) {
           req.data = userId;
           next();
         } else {
           res.status(401).send({
             ok: false,
-            message: "Invalid Token",
+            message: "Invalid Refresh Token",
           });
         }
       } else {
@@ -143,7 +145,7 @@ module.exports = {
     } else {
       res.status(400).send({
         ok: false,
-        message: "Access token and refresh token are needed",
+        message: "Access token and Refresh token are needed",
       });
     }
   },
