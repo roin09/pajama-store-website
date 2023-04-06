@@ -6,13 +6,16 @@ import reportWebVitals from "./reportWebVitals";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { CookiesProvider } from "react-cookie";
+import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <CookiesProvider>
-      <App />
-    </CookiesProvider>
+    <RecoilRoot>
+      <CookiesProvider>
+        <App />
+      </CookiesProvider>
+    </RecoilRoot>
   </React.StrictMode>
 );
 

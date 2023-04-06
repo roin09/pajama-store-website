@@ -7,9 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { saveAccessToken } from "../utils/AccessTokenHandler";
 import { getCookie, setCookie } from "../api/cookies";
-
+import { useRecoilState } from "recoil";
+import loginState from "../atom/loginState";
+import userIdState from "../atom/userIdState";
+import { useRouter } from "../hooks/useRouter";
+import { useRecoilValue } from "recoil";
 const Login = () => {
   const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
+  const [userId, setUserId] = useRecoilState(userIdState);
 
   const {
     register,
@@ -21,33 +27,29 @@ const Login = () => {
       password: "",
     },
   });
+  const { routeTo } = useRouter();
 
-  const testAuth = async () => {
-    const refreshToken = await getCookie("refresh_cookie");
-    const data = { id: "test4", refreshToken: refreshToken };
-    const authResult = await userAuth(data);
-    if (authResult.status === 201) {
-      const new_access_token = authResult.data.data.accessToken;
-      await saveAccessToken(new_access_token);
-      return console.log("access token saved");
-    } else if (authResult.status === 200) {
-      return console.log("access token is valid");
-    }
-    // <- status 200, 201 session storage에 auth user 저장
-    // -> 그 외 /login path로 navigate
-    return console.log("Invalid user");
-  };
   const onSubmit = async (userData) => {
     try {
       const loginResult = await userLogin(userData);
       if (loginResult) {
         const access_token = loginResult.data.data.accessToken;
-
+        const memberId = loginResult.data.data.id;
+        setIsLogin(true);
+        setUserId(memberId);
         await saveAccessToken(access_token);
         return alert("success");
       }
 
       return console.log(userData);
+    } catch (err) {
+      return err;
+    }
+  };
+
+  const navPrivate = async () => {
+    try {
+      routeTo("/react/auth");
     } catch (err) {
       return err;
     }
@@ -101,7 +103,8 @@ const Login = () => {
                 </div>
                 <InputBtn disabled={isSubmitting}>Login</InputBtn>
               </form>
-              <InputBtn onClick={testAuth}>Cookie Test</InputBtn>
+
+              <InputBtn onClick={navPrivate}>Auth Test</InputBtn>
             </InputDiv>
           </Grid>
         </Grid>

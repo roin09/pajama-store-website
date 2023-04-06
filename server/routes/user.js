@@ -30,6 +30,11 @@ router.post("/", user.register);
 router.post("/login", user.login, cookies.setCookie);
 router.get("/logout", user.logout);
 router.get("/profile", user.editProfile);
-router.post("/refresh", redis.refreshVerify, user.refreshAuth);
+router.post(
+  "/refresh",
+  cookies.getCookie,
+  redis.refreshVerify,
+  user.refreshAuth
+);
 
 module.exports = router;

@@ -7,6 +7,8 @@ import Grid from "@mui/material/Unstable_Grid2";
 import background2 from "./img/background2.jpeg";
 import { useRouter } from "../hooks/useRouter";
 import Forth from "./Forth";
+import Header from "../components/Header";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 const Main = () => {
   const { routeTo } = useRouter();
   const [option, setOption] = useState(null);
@@ -66,39 +68,33 @@ const Main = () => {
   }, [show]);
   return (
     <>
-      <BgImage>
-        <BlurBox>
-          <Grid container spacing={1}>
-            <Grid xs={2} sm={2} md={2} lg={2} xl={2}>
-              <div></div>
-            </Grid>
-            <Grid xs={6} sm={8} md={8} lg={8} xl={7}>
-              <BtnContainer>{selectButtons}</BtnContainer>
-
-              {show === true ? selectComponent[option] : null}
-            </Grid>
-
-            <Grid xs={2} sm={2} md={2} lg={2} xl={3}>
-              <UserBtnContainer>
-                <UserBtn
-                  onClick={() => {
-                    routeTo("register");
-                  }}
-                >
-                  Signup
-                </UserBtn>
-                <UserBtn
-                  onClick={() => {
-                    routeTo("login");
-                  }}
-                >
-                  Login
-                </UserBtn>
-              </UserBtnContainer>
-            </Grid>
+      <ThemeProvider
+        theme={createTheme({
+          breakpoints: {
+            values: {
+              laptop: 1024,
+              tablet: 640,
+              mobile: 0,
+              desktop: 1280,
+            },
+          },
+        })}
+      >
+        <Grid container spacing={{ mobile: 1, tablet: 2, laptop: 3 }}>
+          <Grid mobile={1} tablet={2} laptop={3}>
+            <div></div>
           </Grid>
-        </BlurBox>
-      </BgImage>
+          <Grid mobile={3} tablet={4} laptop={6}>
+            <BtnContainer>{selectButtons}</BtnContainer>
+
+            {show === true ? selectComponent[option] : null}
+          </Grid>
+
+          <Grid mobile={2} tablet={2} laptop={3}>
+            <div></div>
+          </Grid>
+        </Grid>
+      </ThemeProvider>
     </>
   );
 };
