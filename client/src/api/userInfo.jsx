@@ -43,3 +43,14 @@ export const userAuth = async (userId) => {
     console.log(err);
   }
 };
+
+export const getCurrentUserInfo = async (userId) => {
+  const url = "/user/refresh";
+  const Instance = createAuthTokenInstance();
+  try {
+    const result = await Instance.post(url, userId);
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
+};

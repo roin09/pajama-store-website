@@ -24,6 +24,8 @@ const createAuthTokenInstance = (options) => {
       return response;
     },
     async function (error) {
+      // window.localStorage.clear();
+      // window.location.href = "/react/login";
       return Promise.reject(error);
     }
   );

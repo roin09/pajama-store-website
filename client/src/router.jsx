@@ -10,7 +10,7 @@ const routerData = [
     path: "/react",
     label: "Main",
     element: <Main />,
-    withAuth: false,
+    withAuth: true,
   },
   {
     id: 1,
