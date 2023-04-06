@@ -8,6 +8,7 @@ var fs = require("fs");
 var cors = require("cors");
 const redis = require("./utils/redis");
 var userRouter = require("./routes/user");
+var authRouter = require("./routes/auth");
 const mongoose = require("mongoose");
 require("dotenv").config();
 // const redis = require("redis");
@@ -59,10 +60,11 @@ app.use(
 app.use(cookieParser());
 
 const options = { maxAge: "1d", immutable: true };
-
+app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.get("/react", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/public/index.html"));
+  res.end();
 });
 
 app.use(

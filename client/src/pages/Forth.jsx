@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "./first.css";
-
+import { cottonProduct } from "../Data/products";
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
 
@@ -32,13 +32,21 @@ const Forth = () => {
   const [content, setContent] = useState(null);
   const [show, setShow] = useState(false);
   const [swiper, setSwiper] = useState(null);
-  const handleClickButton = (e) => {
+  const [filteredItems, setFilteredItems] = useState(null);
+  const handleContent = (name) => {
+    setContent(name);
+  };
+  const handleItems = (name) => {
+    const items = cottonProduct.filter((el) => el.category == name);
+    setFilteredItems(items);
+  };
+  const handleClickButton = async (e) => {
     const { name } = e.target;
     if (content !== name) {
-      setContent(name);
+      await handleContent(name);
+      await handleItems(name);
       setShow(true);
     } else {
-      setContent(name);
       setShow((prev) => !prev);
     }
   };
@@ -48,12 +56,12 @@ const Forth = () => {
   };
   const buttonData = [
     {
-      name: "s",
+      name: "Short",
       id: "f",
       text: "Short",
     },
     {
-      name: "l",
+      name: "Long",
       id: "s",
       text: "Long",
     },
@@ -90,11 +98,13 @@ const Forth = () => {
         className="mySwiper"
       >
         {show === true
-          ? selectComponent[content]?.map((data, idx) => (
-              <SwiperSlide key={idx}>
-                <img key={idx} alt={idx} src={data} />
-              </SwiperSlide>
-            ))
+          ? filteredItems?.map((data, idx) => {
+              return (
+                <SwiperSlide key={idx}>
+                  <img key={idx} alt={idx} src={data.imgs} id={data.id} />
+                </SwiperSlide>
+              );
+            })
           : null}
       </Swiper>
     </>

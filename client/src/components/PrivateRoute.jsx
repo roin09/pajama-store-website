@@ -31,7 +31,7 @@ const PrivateRoute = ({ children }) => {
 
   const fetchUserProfile = useCallback(async () => {
     if (userId) {
-      const userProfileRes = await getCurrentUserInfo({ testId: userId });
+      const userProfileRes = await getCurrentUserInfo();
       if (userProfileRes.status === 200 || userProfileRes.status === 201) {
         setIsLogin(true);
         setIsShow(true);

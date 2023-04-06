@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "./first.css";
-
+import { simpleProduct } from "../Data/products";
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
 
@@ -19,47 +19,65 @@ import simplel6 from "./img/simplel6.png";
 import simplel7 from "./img/simplel7.png";
 import simpleo2 from "./img/simpleo2.png";
 import simples1 from "./img/simples1.png";
-
+import Detailpage from "./Detailpage";
 const First = () => {
+  const [modalOpen, setModalOpen] = useState(false);
   const [content, setContent] = useState(null);
+  const [selectedItemInfo, setselectedItemInfo] = useState({
+    name: "",
+    imgurl: "",
+    imgdata: "",
+    price: "",
+  });
   const [show, setShow] = useState(false);
   const [swiper, setSwiper] = useState(null);
-  const handleClickButton = (e) => {
+  const [filteredItems, setFilteredItems] = useState(null);
+  const handleContent = (name) => {
+    setContent(name);
+  };
+  const handleItems = (name) => {
+    const items = simpleProduct.filter((el) => el.category == name);
+    setFilteredItems(items);
+  };
+  const handleClickButton = async (e) => {
     const { name } = e.target;
     if (content !== name) {
-      setContent(name);
+      await handleContent(name);
+      await handleItems(name);
       setShow(true);
     } else {
-      setContent(name);
       setShow((prev) => !prev);
     }
   };
-  const selectComponent = {
-    simples: [simples1],
-    simplel: [
-      simplel1,
-      simplel2,
-      simplel3,
-      simplel4,
-      simplel5,
-      simplel6,
-      simplel7,
-    ],
-    simpleo: [simpleo2],
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleDetailModal = async (data) => {
+    setselectedItemInfo({
+      name: data.name,
+      imgurl: data.imgs,
+      imgdata: data.id,
+      price: data.price,
+    });
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
   };
   const buttonData = [
     {
-      name: "simples",
+      name: "Short",
       id: "f",
       text: "Short",
     },
     {
-      name: "simplel",
+      name: "Long",
       id: "s",
       text: "Long",
     },
     {
-      name: "simpleo",
+      name: "Dress",
       id: "o",
       text: "Dress",
     },
@@ -96,13 +114,27 @@ const First = () => {
         className="mySwiper"
       >
         {show === true
-          ? selectComponent[content]?.map((data, idx) => (
-              <SwiperSlide key={idx}>
-                <img key={idx} alt={idx} src={data} />
-              </SwiperSlide>
-            ))
+          ? filteredItems?.map((data, idx) => {
+              return (
+                <SwiperSlide key={idx}>
+                  <img
+                    key={idx}
+                    alt={idx}
+                    src={data.imgs}
+                    onClick={() => handleDetailModal(data)}
+                  />
+                </SwiperSlide>
+              );
+            })
           : null}
       </Swiper>
+      {modalOpen && (
+        <Detailpage
+          open={modalOpen}
+          close={closeModal}
+          selectedItemInfo={selectedItemInfo}
+        ></Detailpage>
+      )}
     </>
   );
 };
