@@ -4,6 +4,7 @@ const createTokenInstance = (options) => {
   const root = process.env.REACT_APP_URL;
 
   const newOptions = {
+    ...options,
     baseURL: root,
     withCredentials: true,
   };

@@ -11,7 +11,9 @@ import { simpleProduct } from "../Data/products";
 import { EffectCoverflow, Pagination } from "swiper";
 
 import Detailpage from "./Detailpage";
-const First = () => {
+import { getItemInfo } from "../api/itemInfo";
+const First = (props) => {
+  const { unfilteredItems } = props;
   const [modalOpen, setModalOpen] = useState(false);
   const [content, setContent] = useState(null);
   const [selectedItemInfo, setselectedItemInfo] = useState({
@@ -19,22 +21,25 @@ const First = () => {
     imgurl: "",
     imgdata: "",
     price: "",
+    brand: "",
   });
   const [show, setShow] = useState(false);
   const [swiper, setSwiper] = useState(null);
+
   const [filteredItems, setFilteredItems] = useState(null);
   const handleContent = (name) => {
     setContent(name);
   };
-  const handleItems = (name) => {
-    const items = simpleProduct.filter((el) => el.category == name);
-    setFilteredItems(items);
+  const filterItems = (name) => {
+    const result = unfilteredItems.filter((el) => el.type == name);
+    setFilteredItems(result);
   };
   const handleClickButton = async (e) => {
     const { name } = e.target;
     if (content !== name) {
-      await handleContent(name);
-      await handleItems(name);
+      await setContent(name);
+      await filterItems(name);
+
       setShow(true);
     } else {
       setShow((prev) => !prev);
@@ -50,6 +55,7 @@ const First = () => {
       imgurl: data.imgs,
       imgdata: data.id,
       price: data.price,
+      brand: data.brand,
     });
     setModalOpen(true);
   };
@@ -112,7 +118,7 @@ const First = () => {
                     className="swiper-img"
                     key={idx}
                     alt={idx}
-                    src={data.imgs}
+                    src={data.imgs + "?quality=65&height=250&width=300"}
                     onClick={() => handleDetailModal(data)}
                   />
                 </SwiperSlide>

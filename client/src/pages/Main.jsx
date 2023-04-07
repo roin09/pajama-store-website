@@ -7,43 +7,40 @@ import { useRouter } from "../hooks/useRouter";
 import Forth from "./Forth";
 import Header from "../components/Header";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { getItemInfo } from "../api/itemInfo";
 const Main = () => {
   const { routeTo } = useRouter();
   const [option, setOption] = useState(null);
   const [show, setShow] = useState(false);
-
+  const [unfilteredItems, setUnfilteredItems] = useState(null);
   const handleClickButton = (e) => {
     const { name } = e.target;
     if (option !== name) {
       setOption(name);
-
-      setShow(true);
     } else {
-      setOption(name);
-
-      setShow((prev) => !prev);
+      setOption(null);
     }
   };
 
   const selectComponent = {
-    first: <First />,
-    second: <Second />,
-    forth: <Forth />,
+    simple: <First unfilteredItems={unfilteredItems} />,
+    girlish: <Second unfilteredItems={unfilteredItems} />,
+    cotton: <Forth unfilteredItems={unfilteredItems} />,
   };
   const buttonData = [
     {
-      name: "first",
+      name: "simple",
       id: "sim1",
       text: "Simple",
     },
     {
-      name: "second",
+      name: "girlish",
       id: "girl1",
       text: "Girlish",
     },
 
     {
-      name: "forth",
+      name: "cotton",
       id: "co1",
       text: "Cotton",
     },
@@ -59,10 +56,19 @@ const Main = () => {
     </DefaultButton>
   ));
   useEffect(() => {
-    if (show === false) {
-      setOption(null);
+    if (option !== null) {
+      getItemInfo({ category: option })
+        .then((res) => {
+          console.log(res.data);
+          setUnfilteredItems(res.data);
+        })
+        .then(() => {
+          setShow(true);
+        });
+    } else {
+      setShow((prev) => !prev);
     }
-  }, [show]);
+  }, [option]);
   return (
     <>
       <ThemeProvider
@@ -88,7 +94,16 @@ const Main = () => {
           </Grid>
 
           <Grid mobile={2} tablet={2} laptop={3}>
-            <div></div>
+            <div>
+              {" "}
+              <button
+                onClick={() => {
+                  routeTo("item");
+                }}
+              >
+                item
+              </button>
+            </div>
           </Grid>
         </Grid>
       </ThemeProvider>

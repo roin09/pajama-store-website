@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Auth from "./pages/Auth";
 import PrivateRoute from "./components/PrivateRoute";
+import Item from "./pages/Item";
 const routerData = [
   {
     id: 0,
@@ -39,6 +40,13 @@ const routerData = [
     label: "Auth",
     element: <Auth />,
     withAuth: true,
+  },
+  {
+    id: 5,
+    path: "/react/item",
+    label: "Item",
+    element: <Item />,
+    withAuth: false,
   },
   // {
   //   id:,

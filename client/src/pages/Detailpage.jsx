@@ -1,4 +1,9 @@
 import styled from "styled-components";
+import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { iconEmptyHeart } from "../assets/imgfiles";
+import { iconEmptyCart } from "../assets/imgfiles";
+import { DefaultBtn } from "../components/DefaultBtn";
 const Detailpage = (props) => {
   const { open, close, selectedItemInfo } = props;
   const item = {
@@ -6,6 +11,7 @@ const Detailpage = (props) => {
     imgdata: selectedItemInfo.imgdata,
     imgurl: selectedItemInfo.imgurl,
     price: selectedItemInfo.price,
+    brand: selectedItemInfo.brand,
   };
   return (
     <Modal popup={open ? "popup" : ""} onClick={close}>
@@ -18,24 +24,28 @@ const Detailpage = (props) => {
           </header>
           <main>
             <Container onClick={(e) => e.stopPropagation()}>
-              <ImgBox imgurl={item.imgurl}></ImgBox>
-              <InfoBox>
-                <InfoDiv className="info-name">{item.name}</InfoDiv>
-                <InfoDiv className="info-price">{item.price}</InfoDiv>
-                <InfoDiv>
-                  <a
-                    href="https://www.flaticon.com/free-icons/smart-cart"
-                    title="smart cart icons"
-                  >
-                    {" "}
-                  </a>
-                  <a
-                    href="https://www.flaticon.com/free-icons/heart"
-                    title="heart icons"
-                  >
-                    {" "}
-                  </a>
-                  <div>구매하기</div>
+              <ImgBox className="item" imgurl={item.imgurl}></ImgBox>
+              <InfoBox className="item">
+                <InfoDiv className="info-item info-brand">{item.brand}</InfoDiv>
+                <InfoDiv className="info-item info-name">{item.name}</InfoDiv>
+                <InfoDiv className="info-item info-price">
+                  {item.price} 원
+                </InfoDiv>
+                <InfoDiv className="info-item info-icon">
+                  <div className="fa-icon">
+                    <FontAwesomeIcon
+                      icon={icon({ name: "heart", style: "regular" })}
+                    />
+                  </div>
+                  <div className="fa-icon">
+                    <FontAwesomeIcon
+                      icon={icon({ name: "cart-plus", style: "solid" })}
+                    />
+                  </div>
+
+                  <div>
+                    <DetailBtn>구매하기</DetailBtn>
+                  </div>
                 </InfoDiv>
               </InfoBox>
             </Container>
@@ -126,25 +136,57 @@ to {
 const Container = styled.div`
   display: flex;
   flex-direction: row;
+  .item {
+    flex: 1;
+  }
 `;
 const ImgBox = styled.div`
   background-image: url(${(props) => (props.imgurl ? props.imgurl : "none")});
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 18rem;
+  height: 17.5rem;
 `;
 const InfoBox = styled.div`
   display: flex;
   flex-direction: column;
+  padding-left: 1rem;
+  .info-item:nth-child(1) {
+    flex: 1;
+  }
+  .info-item:nth-child(2) {
+    flex: 1;
+  }
+  .info-item:nth-child(3) {
+    flex: 1;
+  }
+  .info-item:nth-child(4) {
+    flex: 3;
+  }
 `;
 const InfoDiv = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: flex-start;
+
   .info-name {
     color: black;
-    font-weight: 500;
-    font-size: 1rem;
+    align-items: center;
   }
   .info-price {
-    font-weight: 300;
-    font-size: 0.8rem;
+    align-items: center;
   }
+
+  .info-icon {
+    align-items: flex-start;
+  }
+  .fa-icon {
+    margin: 0.6rem 0.3rem 0.3rem 0rem;
+  }
+`;
+const DetailBtn = styled(DefaultBtn)`
+  padding: 0.3rem 0.8rem 0.3rem 0.8rem;
+  font-size: 0.8rem;
 `;
 export default Detailpage;

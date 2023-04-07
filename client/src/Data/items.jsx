@@ -1,11 +1,4 @@
-export const girlProduct = [
-  // {
-  //   id: 0,
-  //   name: "Girlish Dress -1",
-  //   imgs: girlo1,
-  //   price: 30000,
-  //   type: "Dress",
-  // },
+export const items = [
   {
     id: 1,
     name: "Girlish Dress -2",
@@ -42,13 +35,7 @@ export const girlProduct = [
     category: "girlish",
     brand: "Moonlight",
   },
-  // {
-  //   id: 5,
-  //   name: "Girlish Short -1",
-  //   imgs: girls1,
-  //   price: 35000,
-  //   type: "Short",
-  // },
+
   {
     id: 6,
     name: "Girlish Short -2",
@@ -67,13 +54,7 @@ export const girlProduct = [
     category: "girlish",
     brand: "Moonlight",
   },
-  // {
-  //   id: 8,
-  //   name: "Girlish Short -4",
-  //   imgs: girls4,
-  //   price: 35000,
-  //   type: "Short",
-  // },
+
   {
     id: 9,
     name: "Girlish Short -5",
@@ -105,7 +86,7 @@ export const girlProduct = [
 
 export const simpleProduct = [
   {
-    id: 0,
+    id: 12,
     name: "Simple Long -1",
     imgs: "https://i.ibb.co/Z6zrdsj/simplel7.png",
     price: 40000,
