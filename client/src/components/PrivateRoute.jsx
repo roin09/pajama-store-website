@@ -6,7 +6,7 @@ import userIdState from "../atom/userIdState";
 import Login from "../pages/Login";
 import Header from "./Header";
 import { getCurrentUserInfo, getHeaderInfo } from "../api/userInfo";
-import background2 from "../pages/img/background2.jpeg";
+import { backgroundImg } from "../assets/imgfiles";
 import Grid from "@mui/material/Unstable_Grid2";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 const PrivateRoute = ({ children }) => {
@@ -84,11 +84,12 @@ const PrivateRoute = ({ children }) => {
   );
 };
 const BgImage = styled.div`
-  background-image: url(${background2});
+  background-image: url(${backgroundImg});
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   width: calc(var(--vw, 1vw) * 100);
+  height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
   display: flex;
   justify-content: center;

@@ -10,15 +10,6 @@ import { simpleProduct } from "../Data/products";
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
 
-import simplel1 from "./img/simplel1.png";
-import simplel2 from "./img/simplel2.png";
-import simplel3 from "./img/simplel3.png";
-import simplel4 from "./img/simplel4.png";
-import simplel5 from "./img/simplel5.png";
-import simplel6 from "./img/simplel6.png";
-import simplel7 from "./img/simplel7.png";
-import simpleo2 from "./img/simpleo2.png";
-import simples1 from "./img/simples1.png";
 import Detailpage from "./Detailpage";
 const First = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -118,6 +109,7 @@ const First = () => {
               return (
                 <SwiperSlide key={idx}>
                   <img
+                    className="swiper-img"
                     key={idx}
                     alt={idx}
                     src={data.imgs}

@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import First from "./First";
 import Second from "./Second";
-import Third from "./Third";
 import Grid from "@mui/material/Unstable_Grid2";
-import background2 from "./img/background2.jpeg";
 import { useRouter } from "../hooks/useRouter";
 import Forth from "./Forth";
 import Header from "../components/Header";
@@ -30,7 +28,6 @@ const Main = () => {
   const selectComponent = {
     first: <First />,
     second: <Second />,
-    third: <Third />,
     forth: <Forth />,
   };
   const buttonData = [
@@ -98,22 +95,7 @@ const Main = () => {
     </>
   );
 };
-const BgImage = styled.div`
-  background-image: url(${background2});
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: calc(var(--vw, 1vw) * 100);
-  height: calc(var(--vh, 1vh) * 100);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const BlurBox = styled.div`
-  backdrop-filter: blur(10px);
-  width: calc(var(--vw, 1vw) * 95);
-  height: calc(var(--vh, 1vh) * 95);
-`;
+
 const Gridbox = styled.div``;
 const MainBox = styled.div`
   display: flex;

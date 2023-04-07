@@ -10,20 +10,7 @@ import "./first.css";
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
 import { girlProduct } from "../Data/products";
-import girls1 from "./img/girls1.png";
-import girls2 from "./img/girls2.png";
-import girls3 from "./img/girls3.png";
-import girls4 from "./img/girls4.png";
-import girls5 from "./img/girls5.png";
 
-import girls6 from "./img/girls6.png";
-import girls7 from "./img/girls7.png";
-
-import girlo1 from "./img/girlo1.png";
-import girlo2 from "./img/girlo2.png";
-import girlo3 from "./img/girlo3.png";
-import girlo4 from "./img/girlo4.png";
-import girlo5 from "./img/girlo5.png";
 const Second = () => {
   const [content, setContent] = useState(null);
   const [show, setShow] = useState(false);
@@ -47,11 +34,11 @@ const Second = () => {
     }
   };
 
-  const selectComponent = {
-    girls: [girls1, girls2, girls3, girls4, girls5],
-    girll: [girls6, girls7],
-    girlo: [girlo1, girlo2, girlo3, girlo4, girlo5],
-  };
+  // const selectComponent = {
+  //   girls: [girls1, girls2, girls3, girls4, girls5],
+  //   girll: [girls6, girls7],
+  //   girlo: [girlo1, girlo2, girlo3, girlo4, girlo5],
+  // };
   const buttonData = [
     {
       name: "Short",
@@ -104,7 +91,13 @@ const Second = () => {
           ? filteredItems?.map((data, idx) => {
               return (
                 <SwiperSlide key={idx}>
-                  <img key={idx} alt={idx} src={data.imgs} id={data.id} />
+                  <img
+                    className="swiper-img"
+                    key={idx}
+                    alt={idx}
+                    src={data.imgs}
+                    id={data.id}
+                  />
                 </SwiperSlide>
               );
             })

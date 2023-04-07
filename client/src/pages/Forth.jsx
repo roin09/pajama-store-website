@@ -10,24 +10,6 @@ import { cottonProduct } from "../Data/products";
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
 
-import s1 from "./img/s.jpeg";
-import s2 from "./img/s2.jpeg";
-import s3 from "./img/s3.jpeg";
-import s4 from "./img/s4.jpeg";
-import s5 from "./img/s5.jpeg";
-import s6 from "./img/s6.jpeg";
-import s7 from "./img/s7.jpeg";
-import s8 from "./img/s8.jpeg";
-import s9 from "./img/s9.jpeg";
-
-import l1 from "./img/l1.jpeg";
-import l2 from "./img/l2.jpeg";
-import l3 from "./img/l3.jpeg";
-import l4 from "./img/l4.jpeg";
-import l5 from "./img/l5.jpeg";
-import l6 from "./img/l6.jpeg";
-import l7 from "./img/l7.jpeg";
-
 const Forth = () => {
   const [content, setContent] = useState(null);
   const [show, setShow] = useState(false);
@@ -50,10 +32,10 @@ const Forth = () => {
       setShow((prev) => !prev);
     }
   };
-  const selectComponent = {
-    s: [s1, s2, s3, s4, s5, s6, s7, s8, s9],
-    l: [l1, l2, l3, l4, l5, l6, l7],
-  };
+  // const selectComponent = {
+  //   s: [s1, s2, s3, s4, s5, s6, s7, s8, s9],
+  //   l: [l1, l2, l3, l4, l5, l6, l7],
+  // };
   const buttonData = [
     {
       name: "Short",
@@ -101,7 +83,13 @@ const Forth = () => {
           ? filteredItems?.map((data, idx) => {
               return (
                 <SwiperSlide key={idx}>
-                  <img key={idx} alt={idx} src={data.imgs} id={data.id} />
+                  <img
+                    className="swiper-img"
+                    key={idx}
+                    alt={idx}
+                    src={data.imgs}
+                    id={data.id}
+                  />
                 </SwiperSlide>
               );
             })

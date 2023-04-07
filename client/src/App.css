@@ -120,6 +120,7 @@ section {
 }
 body {
   line-height: 1.5;
+  min-height: 100%;
 }
 ol,
 ul {
@@ -147,4 +148,9 @@ a {
 
 .private-div {
   background-color: rgba(0, 0, 0, 0);
+}
+.swiper-img {
+  width: 18rem;
+  height: 17.5rem;
+  object-fit: cover;
 }
