@@ -6,57 +6,77 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "./first.css";
-
+//Lazy loading
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
-
-import girls1 from "./img/girls1.png";
-import girls2 from "./img/girls2.png";
-import girls3 from "./img/girls3.png";
-import girls4 from "./img/girls4.png";
-import girls5 from "./img/girls5.png";
-
-import girls6 from "./img/girls6.png";
-import girls7 from "./img/girls7.png";
-
-import girlo1 from "./img/girlo1.png";
-import girlo2 from "./img/girlo2.png";
-import girlo3 from "./img/girlo3.png";
-import girlo4 from "./img/girlo4.png";
-import girlo5 from "./img/girlo5.png";
-const Second = () => {
+import Detailpage from "./Detailpage";
+const Second = (props) => {
+  const { unfilteredItems } = props;
+  const [modalOpen, setModalOpen] = useState(false);
   const [content, setContent] = useState(null);
+  const [selectedItemInfo, setselectedItemInfo] = useState({
+    name: "",
+    imgurl: "",
+    imgdata: "",
+    price: null,
+    brand: "",
+    sale: null,
+  });
   const [show, setShow] = useState(false);
   const [swiper, setSwiper] = useState(null);
-  const handleClickButton = (e) => {
+
+  const [filteredItems, setFilteredItems] = useState(null);
+  const handleContent = (name) => {
+    setContent(name);
+  };
+  const filterItems = (name) => {
+    const result = unfilteredItems.filter((el) => el.type == name);
+    setFilteredItems(result);
+  };
+  const handleClickButton = async (e) => {
     const { name } = e.target;
     if (content !== name) {
-      setContent(name);
+      await setContent(name);
+      await filterItems(name);
+
       setShow(true);
     } else {
-      setContent(name);
       setShow((prev) => !prev);
     }
   };
+  const openModal = () => {
+    setModalOpen(true);
+  };
 
-  const selectComponent = {
-    girls: [girls1, girls2, girls3, girls4, girls5],
-    girll: [girls6, girls7],
-    girlo: [girlo1, girlo2, girlo3, girlo4, girlo5],
+  const handleDetailModal = async (data) => {
+    setselectedItemInfo({
+      name: data.name,
+      imgurl: data.imgs,
+      imgdata: data.id,
+      price: data.price,
+      brand: data.brand,
+      sale: data.sale,
+    });
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
   };
   const buttonData = [
     {
-      name: "girls",
+      name: "Short",
       id: "gs",
       text: "Short",
     },
     {
-      name: "girll",
+      name: "Long",
       id: "gl",
       text: "Long",
     },
     {
-      name: "girlo",
+      name: "Dress",
       id: "go",
       text: "Dress",
     },
@@ -93,13 +113,31 @@ const Second = () => {
         className="mySwiper"
       >
         {show === true
-          ? selectComponent[content]?.map((data, idx) => (
-              <SwiperSlide key={idx}>
-                <img key={idx} alt={idx} src={data} />
-              </SwiperSlide>
-            ))
+          ? filteredItems?.map((data, idx) => {
+              return (
+                <SwiperSlide key={idx}>
+                  <LazyLoadImage
+                    className="swiper-img"
+                    effect="blur"
+                    key={idx}
+                    alt={idx}
+                    height={250}
+                    width={300}
+                    src={data.imgs + "?quality=65"}
+                    onClick={() => handleDetailModal(data)}
+                  />
+                </SwiperSlide>
+              );
+            })
           : null}
       </Swiper>
+      {modalOpen && (
+        <Detailpage
+          open={modalOpen}
+          close={closeModal}
+          selectedItemInfo={selectedItemInfo}
+        ></Detailpage>
+      )}
     </>
   );
 };

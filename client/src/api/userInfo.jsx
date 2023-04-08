@@ -44,11 +44,11 @@ export const userAuth = async (userId) => {
   }
 };
 
-export const getCurrentUserInfo = async (userId) => {
-  const url = "/user/refresh";
+export const getCurrentUserInfo = async () => {
+  const url = "/auth";
   const Instance = createAuthTokenInstance();
   try {
-    const result = await Instance.post(url, userId);
+    const result = await Instance.get(url);
     return result;
   } catch (err) {
     console.log(err);

@@ -16,6 +16,11 @@ module.exports = {
       httpOnly: true,
       path: "/",
     });
+    await res.cookie("userId", req.user_id, {
+      maxAge: 86400000,
+      httpOnly: true,
+      path: "/",
+    });
     res.status(200).send({
       ok: true,
       data: {
@@ -25,9 +30,9 @@ module.exports = {
     });
   },
   getCookie: async (req, res, next) => {
-    console.log(req.body.testId);
     const userCookie = req.cookies.Token;
-    const userId = req.body.testId;
+    const userId = req.cookies.userId;
+
     if (userCookie) {
       req.refresh_cookie = userCookie;
       req.userId = userId;
