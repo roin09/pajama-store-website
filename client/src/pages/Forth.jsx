@@ -6,36 +6,61 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "./first.css";
-import { cottonProduct } from "../Data/products";
+
 // Swiper에서 가져올 모듈들
+import Detailpage from "./Detailpage";
 import { EffectCoverflow, Pagination } from "swiper";
 
-const Forth = () => {
+const Forth = (props) => {
+  const { unfilteredItems } = props;
+  const [modalOpen, setModalOpen] = useState(false);
   const [content, setContent] = useState(null);
+  const [selectedItemInfo, setselectedItemInfo] = useState({
+    name: "",
+    imgurl: "",
+    imgdata: "",
+    price: "",
+    brand: "",
+  });
   const [show, setShow] = useState(false);
   const [swiper, setSwiper] = useState(null);
+
   const [filteredItems, setFilteredItems] = useState(null);
   const handleContent = (name) => {
     setContent(name);
   };
-  const handleItems = (name) => {
-    const items = cottonProduct.filter((el) => el.category == name);
-    setFilteredItems(items);
+  const filterItems = (name) => {
+    const result = unfilteredItems.filter((el) => el.type == name);
+    setFilteredItems(result);
   };
   const handleClickButton = async (e) => {
     const { name } = e.target;
     if (content !== name) {
-      await handleContent(name);
-      await handleItems(name);
+      await setContent(name);
+      await filterItems(name);
+
       setShow(true);
     } else {
       setShow((prev) => !prev);
     }
   };
-  // const selectComponent = {
-  //   s: [s1, s2, s3, s4, s5, s6, s7, s8, s9],
-  //   l: [l1, l2, l3, l4, l5, l6, l7],
-  // };
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleDetailModal = async (data) => {
+    setselectedItemInfo({
+      name: data.name,
+      imgurl: data.imgs,
+      imgdata: data.id,
+      price: data.price,
+      brand: data.brand,
+    });
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
+  };
   const buttonData = [
     {
       name: "Short",
@@ -46,6 +71,11 @@ const Forth = () => {
       name: "Long",
       id: "s",
       text: "Long",
+    },
+    {
+      name: "Dress",
+      id: "d",
+      text: "Dress",
     },
   ];
   const selectButtons = buttonData.map((data) => (
@@ -87,14 +117,22 @@ const Forth = () => {
                     className="swiper-img"
                     key={idx}
                     alt={idx}
-                    src={data.imgs}
-                    id={data.id}
+                    loading="lazy"
+                    src={data.imgs + "?quality=65&height=250&width=300"}
+                    onClick={() => handleDetailModal(data)}
                   />
                 </SwiperSlide>
               );
             })
           : null}
       </Swiper>
+      {modalOpen && (
+        <Detailpage
+          open={modalOpen}
+          close={closeModal}
+          selectedItemInfo={selectedItemInfo}
+        ></Detailpage>
+      )}
     </>
   );
 };

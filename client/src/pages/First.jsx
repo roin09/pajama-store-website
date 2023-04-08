@@ -6,12 +6,11 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "./first.css";
-import { simpleProduct } from "../Data/products";
+
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
-
 import Detailpage from "./Detailpage";
-import { getItemInfo } from "../api/itemInfo";
+
 const First = (props) => {
   const { unfilteredItems } = props;
   const [modalOpen, setModalOpen] = useState(false);
@@ -118,6 +117,7 @@ const First = (props) => {
                     className="swiper-img"
                     key={idx}
                     alt={idx}
+                    loading="lazy"
                     src={data.imgs + "?quality=65&height=250&width=300"}
                     onClick={() => handleDetailModal(data)}
                   />

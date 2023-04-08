@@ -44,11 +44,6 @@ const Main = () => {
       id: "co1",
       text: "Cotton",
     },
-    // {
-    //   name: "third",
-    //   id: "char1",
-    //   text: "Character",
-    // },
   ];
   const selectButtons = buttonData.map((data) => (
     <DefaultButton onClick={handleClickButton} name={data.name} key={data.id}>

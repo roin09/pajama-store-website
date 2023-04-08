@@ -89,7 +89,6 @@ const BgImage = styled.div`
   background-position: center;
   background-size: cover;
   width: calc(var(--vw, 1vw) * 100);
-  height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
   display: flex;
   justify-content: center;

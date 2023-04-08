@@ -9,36 +9,57 @@ import "./first.css";
 
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
-import { girlProduct } from "../Data/products";
-
-const Second = () => {
+import Detailpage from "./Detailpage";
+const Second = (props) => {
+  const { unfilteredItems } = props;
+  const [modalOpen, setModalOpen] = useState(false);
   const [content, setContent] = useState(null);
+  const [selectedItemInfo, setselectedItemInfo] = useState({
+    name: "",
+    imgurl: "",
+    imgdata: "",
+    price: "",
+    brand: "",
+  });
   const [show, setShow] = useState(false);
   const [swiper, setSwiper] = useState(null);
+
   const [filteredItems, setFilteredItems] = useState(null);
   const handleContent = (name) => {
     setContent(name);
   };
-  const handleItems = (name) => {
-    const items = girlProduct.filter((el) => el.category == name);
-    setFilteredItems(items);
+  const filterItems = (name) => {
+    const result = unfilteredItems.filter((el) => el.type == name);
+    setFilteredItems(result);
   };
   const handleClickButton = async (e) => {
     const { name } = e.target;
     if (content !== name) {
-      await handleContent(name);
-      await handleItems(name);
+      await setContent(name);
+      await filterItems(name);
+
       setShow(true);
     } else {
       setShow((prev) => !prev);
     }
   };
+  const openModal = () => {
+    setModalOpen(true);
+  };
 
-  // const selectComponent = {
-  //   girls: [girls1, girls2, girls3, girls4, girls5],
-  //   girll: [girls6, girls7],
-  //   girlo: [girlo1, girlo2, girlo3, girlo4, girlo5],
-  // };
+  const handleDetailModal = async (data) => {
+    setselectedItemInfo({
+      name: data.name,
+      imgurl: data.imgs,
+      imgdata: data.id,
+      price: data.price,
+      brand: data.brand,
+    });
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
+  };
   const buttonData = [
     {
       name: "Short",
@@ -95,14 +116,22 @@ const Second = () => {
                     className="swiper-img"
                     key={idx}
                     alt={idx}
-                    src={data.imgs}
-                    id={data.id}
+                    loading="lazy"
+                    src={data.imgs + "?quality=65&height=250&width=300"}
+                    onClick={() => handleDetailModal(data)}
                   />
                 </SwiperSlide>
               );
             })
           : null}
       </Swiper>
+      {modalOpen && (
+        <Detailpage
+          open={modalOpen}
+          close={closeModal}
+          selectedItemInfo={selectedItemInfo}
+        ></Detailpage>
+      )}
     </>
   );
 };
