@@ -167,3 +167,14 @@ a {
   font-weight: 500;
   font-size: 1.3rem;
 }
+.info-sale {
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: rgb(182, 5, 5);
+}
+.info-saleprice {
+  font-weight: 300;
+  font-size: 0.9rem;
+  text-decoration-line: line-through;
+  color: rgb(161, 158, 158);
+}

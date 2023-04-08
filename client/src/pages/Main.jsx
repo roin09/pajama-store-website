@@ -54,7 +54,6 @@ const Main = () => {
     if (option !== null) {
       getItemInfo({ category: option })
         .then((res) => {
-          console.log(res.data);
           setUnfilteredItems(res.data);
         })
         .then(() => {

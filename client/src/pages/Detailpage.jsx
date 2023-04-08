@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { iconEmptyHeart } from "../assets/imgfiles";
-import { iconEmptyCart } from "../assets/imgfiles";
+//Lazy loading
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 import { DefaultBtn } from "../components/DefaultBtn";
+import { useEffect, useState } from "react";
 const Detailpage = (props) => {
   const { open, close, selectedItemInfo } = props;
   const item = {
@@ -12,7 +14,22 @@ const Detailpage = (props) => {
     imgurl: selectedItemInfo.imgurl,
     price: selectedItemInfo.price,
     brand: selectedItemInfo.brand,
+    sale: selectedItemInfo.sale,
   };
+  const [salePrice, setSalePrice] = useState("");
+  const [sale, setSale] = useState(item.sale);
+  const [price, setPrice] = useState(item.price);
+  const saleCal = (price, sale) => {
+    const iPrice = parseInt(price);
+    const iSale = parseInt(sale);
+    const result = (iPrice * (100 - iSale)) / 100;
+    return String(result);
+  };
+
+  useEffect(() => {
+    const result = saleCal(price, sale);
+    setSalePrice(result);
+  }, [item]);
   return (
     <Modal popup={open ? "popup" : ""} onClick={close}>
       {open ? (
@@ -24,26 +41,38 @@ const Detailpage = (props) => {
           </header>
           <main>
             <Container onClick={(e) => e.stopPropagation()}>
-              <ImgBox className="item" imgurl={item.imgurl}></ImgBox>
+              <ImgBox className="item">
+                <LazyLoadImage
+                  className="item-img"
+                  src={item.imgurl}
+                  effect="blur"
+                />
+              </ImgBox>
               <InfoBox className="item">
                 <InfoDiv className="info-item info-brand">{item.brand}</InfoDiv>
                 <InfoDiv className="info-item info-name">{item.name}</InfoDiv>
-                <InfoDiv className="info-item info-price">
-                  {item.price} 원
+                <InfoDiv className="info-item info-saleprice">
+                  {item.price}
+                </InfoDiv>
+                <InfoDiv className="info-item">
+                  <SaleDiv className="price-item info-sale">{sale}%</SaleDiv>
+                  <SaleDiv className="price-item info-price">
+                    {salePrice} 원
+                  </SaleDiv>
                 </InfoDiv>
                 <InfoDiv className="info-item info-icon">
-                  <div className="fa-icon">
+                  <div className="fa-icon infodiv-item">
                     <FontAwesomeIcon
                       icon={icon({ name: "heart", style: "regular" })}
                     />
                   </div>
-                  <div className="fa-icon">
+                  <div className="fa-icon infodiv-item">
                     <FontAwesomeIcon
                       icon={icon({ name: "cart-plus", style: "solid" })}
                     />
                   </div>
 
-                  <div>
+                  <div className="infodiv-item">
                     <DetailBtn>구매하기</DetailBtn>
                   </div>
                 </InfoDiv>
@@ -136,57 +165,78 @@ to {
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  .item {
+  .item:nth-child(1) {
+    flex: 1;
+  }
+  .item:nth-child(2) {
     flex: 1;
   }
 `;
 const ImgBox = styled.div`
-  background-image: url(${(props) => (props.imgurl ? props.imgurl : "none")});
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: 18rem;
-  height: 17.5rem;
+  .item-img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 const InfoBox = styled.div`
   display: flex;
   flex-direction: column;
   padding-left: 1rem;
+  align-items: flex-start;
   .info-item:nth-child(1) {
-    flex: 1;
+    flex: 0.8;
   }
   .info-item:nth-child(2) {
     flex: 1;
   }
   .info-item:nth-child(3) {
-    flex: 1;
+    flex: 0.4;
   }
   .info-item:nth-child(4) {
-    flex: 3;
+    flex: 1;
+  }
+  .info-item:nth-child(5) {
+    flex: 1.7;
   }
 `;
 const InfoDiv = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-
+  width: 100%;
   .info-name {
     color: black;
-    align-items: center;
-  }
-  .info-price {
-    align-items: center;
   }
 
   .info-icon {
     align-items: flex-start;
+    justify-content: center;
   }
   .fa-icon {
     margin: 0.6rem 0.3rem 0.3rem 0rem;
   }
+  .infodiv-item:nth-child(1) {
+    flex: 0.2;
+  }
+  .infodiv-item:nth-child(2) {
+    flex: 0.2;
+  }
+  .infodiv-item:nth-child(3) {
+    flex: 1;
+  }
+`;
+const SaleDiv = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  .price-item:nth-child(1) {
+    flex: 1;
+  }
+  .price-item:nth-child(2) {
+    flex: 2;
+  }
 `;
 const DetailBtn = styled(DefaultBtn)`
   padding: 0.3rem 0.8rem 0.3rem 0.8rem;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 `;
 export default Detailpage;
