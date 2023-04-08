@@ -21,6 +21,7 @@
     "mongoose": "^7.0.2",
     "morgan": "~1.9.1",
     "redis": "^4.6.5",
+    "serve-favicon": "^2.5.0",
     "webidl-conversions": "^7.0.0"
   },
   "devDependencies": {

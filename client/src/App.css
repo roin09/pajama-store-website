@@ -120,6 +120,7 @@ section {
 }
 body {
   line-height: 1.5;
+  min-height: 100%;
 }
 ol,
 ul {
@@ -147,4 +148,33 @@ a {
 
 .private-div {
   background-color: rgba(0, 0, 0, 0);
+}
+.swiper-img {
+  width: 18rem;
+  height: 17.5rem;
+  object-fit: cover;
+  cursor: pointer;
+}
+.info-brand {
+  font-weight: 300;
+  font-size: 0.8rem;
+}
+.info-name {
+  font-weight: 400;
+  font-size: 1rem;
+}
+.info-price {
+  font-weight: 500;
+  font-size: 1.3rem;
+}
+.info-sale {
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: rgb(182, 5, 5);
+}
+.info-saleprice {
+  font-weight: 300;
+  font-size: 0.9rem;
+  text-decoration-line: line-through;
+  color: rgb(161, 158, 158);
 }

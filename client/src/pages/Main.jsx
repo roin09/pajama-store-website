@@ -2,59 +2,48 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import First from "./First";
 import Second from "./Second";
-import Third from "./Third";
 import Grid from "@mui/material/Unstable_Grid2";
-import background2 from "./img/background2.jpeg";
 import { useRouter } from "../hooks/useRouter";
 import Forth from "./Forth";
 import Header from "../components/Header";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { getItemInfo } from "../api/itemInfo";
 const Main = () => {
   const { routeTo } = useRouter();
   const [option, setOption] = useState(null);
   const [show, setShow] = useState(false);
-
+  const [unfilteredItems, setUnfilteredItems] = useState(null);
   const handleClickButton = (e) => {
     const { name } = e.target;
     if (option !== name) {
       setOption(name);
-
-      setShow(true);
     } else {
-      setOption(name);
-
-      setShow((prev) => !prev);
+      setOption(null);
     }
   };
 
   const selectComponent = {
-    first: <First />,
-    second: <Second />,
-    third: <Third />,
-    forth: <Forth />,
+    simple: <First unfilteredItems={unfilteredItems} />,
+    girlish: <Second unfilteredItems={unfilteredItems} />,
+    cotton: <Forth unfilteredItems={unfilteredItems} />,
   };
   const buttonData = [
     {
-      name: "first",
+      name: "simple",
       id: "sim1",
       text: "Simple",
     },
     {
-      name: "second",
+      name: "girlish",
       id: "girl1",
       text: "Girlish",
     },
 
     {
-      name: "forth",
+      name: "cotton",
       id: "co1",
       text: "Cotton",
     },
-    // {
-    //   name: "third",
-    //   id: "char1",
-    //   text: "Character",
-    // },
   ];
   const selectButtons = buttonData.map((data) => (
     <DefaultButton onClick={handleClickButton} name={data.name} key={data.id}>
@@ -62,10 +51,18 @@ const Main = () => {
     </DefaultButton>
   ));
   useEffect(() => {
-    if (show === false) {
-      setOption(null);
+    if (option !== null) {
+      getItemInfo({ category: option })
+        .then((res) => {
+          setUnfilteredItems(res.data);
+        })
+        .then(() => {
+          setShow(true);
+        });
+    } else {
+      setShow((prev) => !prev);
     }
-  }, [show]);
+  }, [option]);
   return (
     <>
       <ThemeProvider
@@ -91,29 +88,23 @@ const Main = () => {
           </Grid>
 
           <Grid mobile={2} tablet={2} laptop={3}>
-            <div></div>
+            <div>
+              {" "}
+              <button
+                onClick={() => {
+                  routeTo("item");
+                }}
+              >
+                item
+              </button>
+            </div>
           </Grid>
         </Grid>
       </ThemeProvider>
     </>
   );
 };
-const BgImage = styled.div`
-  background-image: url(${background2});
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: calc(var(--vw, 1vw) * 100);
-  height: calc(var(--vh, 1vh) * 100);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const BlurBox = styled.div`
-  backdrop-filter: blur(10px);
-  width: calc(var(--vw, 1vw) * 95);
-  height: calc(var(--vh, 1vh) * 95);
-`;
+
 const Gridbox = styled.div``;
 const MainBox = styled.div`
   display: flex;

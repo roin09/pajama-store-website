@@ -2,7 +2,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { userAuth, userLogin } from "../api/userInfo";
-import background2 from "./img/background2.jpeg";
+import { backgroundImg } from "../assets/imgfiles";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { saveAccessToken } from "../utils/AccessTokenHandler";
@@ -113,7 +113,7 @@ const Login = () => {
   );
 };
 const BgImage = styled.div`
-  background-image: url(${background2});
+  background-image: url(${backgroundImg});
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
