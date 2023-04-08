@@ -20,8 +20,9 @@ const Second = (props) => {
     name: "",
     imgurl: "",
     imgdata: "",
-    price: "",
+    price: null,
     brand: "",
+    sale: null,
   });
   const [show, setShow] = useState(false);
   const [swiper, setSwiper] = useState(null);
@@ -56,6 +57,7 @@ const Second = (props) => {
       imgdata: data.id,
       price: data.price,
       brand: data.brand,
+      sale: data.sale,
     });
     setModalOpen(true);
   };
