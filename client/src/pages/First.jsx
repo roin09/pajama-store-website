@@ -127,6 +127,21 @@ const First = (props) => {
                     src={data.imgs + "?quality=65"}
                     onClick={() => handleDetailModal(data)}
                   />
+
+                  <picture>
+                    <source
+                      alt={idx}
+                      className="swiper-img"
+                      srcSet={data.imgs + "?quality=65&width=300&heght=250"}
+                      onClick={() => handleDetailModal(data)}
+                    />
+                    <img
+                      alt={idx}
+                      className="swiper-img"
+                      src={data.imgs + "?quality=65&width=300&heght=250"}
+                      onClick={() => handleDetailModal(data)}
+                    />
+                  </picture>
                 </SwiperSlide>
               );
             })

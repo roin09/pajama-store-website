@@ -15,6 +15,7 @@ const itemSchema = mongoose.Schema({
   brand: String,
   sale: Number,
   type: String,
+  webpImgs: String,
 });
 
 itemSchema.pre("save", function (next) {

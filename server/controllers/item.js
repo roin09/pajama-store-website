@@ -1,3 +1,5 @@
+var CWebp = require("cwebp");
+
 const Item = require("../models/Item");
 
 module.exports.additem = async (req, res) => {
@@ -5,11 +7,12 @@ module.exports.additem = async (req, res) => {
     const exItem = await Item.findOne({ id: req.body.id });
     if (exItem)
       return res.status(409).send({ message: "이미 등록된 상품ID 입니다" });
-
+    var webpImgs = new CWebp(req.body.imgs);
     const item = new Item({
       id: req.body.id,
       name: req.body.name,
       imgs: req.body.imgs,
+      webpImgs: webpImgs,
       price: req.body.price,
       category: req.body.category,
       brand: req.body.brand,
