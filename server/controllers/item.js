@@ -1,18 +1,23 @@
-var CWebp = require("cwebp");
+const sharp = require("sharp");
 
 const Item = require("../models/Item");
 
 module.exports.additem = async (req, res) => {
   try {
+    // const imgUrl = req.file.location;
     const exItem = await Item.findOne({ id: req.body.id });
     if (exItem)
       return res.status(409).send({ message: "이미 등록된 상품ID 입니다" });
-    var webpImgs = new CWebp(req.body.imgs);
+
+    // const imgorigin = await sharp(imgUrl).resize({ width: 300, height: 250 });
+    // const imgWebp = await sharp(imgUrl)
+    //   .webp({ lossless: true })
+    //   .resize({ width: 300, height: 250 });
     const item = new Item({
       id: req.body.id,
-      name: req.body.name,
-      imgs: req.body.imgs,
-      webpImgs: webpImgs,
+      itemName: req.body.itemName,
+      imgs: null,
+      webpImgs: null,
       price: req.body.price,
       category: req.body.category,
       brand: req.body.brand,

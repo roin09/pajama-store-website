@@ -5,17 +5,17 @@ const itemSchema = mongoose.Schema({
     unique: true,
     require: true,
   },
-  name: {
+  itemName: {
     type: String,
     require: true,
   },
   imgs: String,
+  webpImgs: String,
   price: Number,
   category: String,
   brand: String,
   sale: Number,
   type: String,
-  webpImgs: String,
 });
 
 itemSchema.pre("save", function (next) {

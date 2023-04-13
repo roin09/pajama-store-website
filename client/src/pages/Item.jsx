@@ -2,23 +2,28 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { addItem } from "../api/itemInfo";
 const Item = () => {
-  const [saveItem, setSaveItem] = useState("");
+  /*FormData 변수 */
+  const [refFile, setRefFile] = useState(null); // 파일 저장 할 State
+
+  //파일 추가
 
   const {
+    setValue,
     register,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm({
     defaultValues: {
-      id: null,
-      name: "",
-      imgs: "",
+      itemName: "",
+      imgs: null,
+      webpImgs: null,
       price: null,
       category: "",
       brand: "",
       sale: null,
     },
   });
+
   const setRandomId = () => {
     const today = new Date();
     const todayDate = `${today.getFullYear()}${
@@ -29,13 +34,27 @@ const Item = () => {
     const randomId = todayDate + randomNumber;
     return Number(randomId);
   };
+  const fileChange = (e) => {
+    setRefFile(e.target.files[0]);
+  };
   const onSubmit = async (data) => {
-    const newId = await setRandomId();
-    const newData = { ...data, id: newId };
+    // const newId = await setRandomId();
+
+    const { file, ...fields } = data;
+
+    const formData = Object.entries(fields).reduce(
+      (fd, [key, val]) => (fd.append(key, val), fd),
+      new FormData()
+    );
+
+    formData.append("sumFile", refFile);
+    // var file = document.querySelector("#file");
+    // formData.append("id", newId);
+    // 객체를 JSON 타입으로 변환하여 Blob 객체 생성
+
     try {
-      addItem(newData).then(async (res) => {
+      addItem(formData).then(async (res) => {
         if (res.status === 200) {
-          await setSaveItem("success");
           alert("test");
         } else {
           alert("fail");
@@ -59,8 +78,14 @@ const Item = () => {
         <option value="Dress">Dress</option>
       </select>
 
-      <input {...register("name")} placeholder="name" />
-      <input {...register("imgs")} placeholder="imgs" />
+      <input {...register("itemName")} placeholder="itemName" />
+      <input
+        {...register("file")}
+        type="file"
+        name="sumFile"
+        accept="image/*"
+        onChange={fileChange}
+      />
       <input {...register("price")} placeholder="price" />
       <input {...register("brand")} placeholder="brand" />
       <input {...register("sale")} placeholder="sale" />
