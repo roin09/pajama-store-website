@@ -39,7 +39,7 @@ const Item = () => {
   };
   const onSubmit = async (data) => {
     // const newId = await setRandomId();
-
+    const id = setRandomId();
     const { file, ...fields } = data;
 
     const formData = Object.entries(fields).reduce(
@@ -48,6 +48,7 @@ const Item = () => {
     );
 
     formData.append("sumFile", refFile);
+    formData.append("id", id);
     // var file = document.querySelector("#file");
     // formData.append("id", newId);
     // 객체를 JSON 타입으로 변환하여 Blob 객체 생성

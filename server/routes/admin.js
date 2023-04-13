@@ -22,12 +22,16 @@ const upload = multer({
   }),
 });
 
-router.post("/additem", upload.single("sumFile"), function (req, res, next) {
-  console.log(req.file);
-  const { category, type, itemName, price, brand, sale } = req.body;
-
-  res.status(200).send("Successfully uploaded ");
-});
+router.post(
+  "/additem",
+  upload.single("sumFile"),
+  function (req, res, next) {
+    console.log(req.file);
+    const { category, type, itemName, price, brand, sale, id } = req.body;
+    return next();
+  },
+  item.additem
+);
 router.get("/getitem", item.getitem);
 
 module.exports = router;

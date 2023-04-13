@@ -1,10 +1,15 @@
 const sharp = require("sharp");
-
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const Item = require("../models/Item");
-
+const dotenv = require("dotenv");
+const s3 = new S3Client();
+dotenv.config();
 module.exports.additem = async (req, res) => {
   try {
     // const imgUrl = req.file.location;
+    // const s3Key = req.file.key;
+    // const imgFile = s3.getObject({ Bucket: "item-database", Key: s3Key });
+    const imgUrl = req.file.location;
     const exItem = await Item.findOne({ id: req.body.id });
     if (exItem)
       return res.status(409).send({ message: "이미 등록된 상품ID 입니다" });
@@ -16,7 +21,7 @@ module.exports.additem = async (req, res) => {
     const item = new Item({
       id: req.body.id,
       itemName: req.body.itemName,
-      imgs: null,
+      imgs: imgUrl,
       webpImgs: null,
       price: req.body.price,
       category: req.body.category,
