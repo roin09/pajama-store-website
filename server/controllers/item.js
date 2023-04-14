@@ -10,7 +10,8 @@ module.exports.additem = async (req, res) => {
     // const s3Key = req.file.key;
     // const imgFile = s3.getObject({ Bucket: "item-database", Key: s3Key });
     const imgUrl = req.file.location;
-    const exItem = await Item.findOne({ id: req.body.id });
+    const imgKey = req.file.key;
+    const exItem = await Item.findOne({ id: imgKey });
     if (exItem)
       return res.status(409).send({ message: "이미 등록된 상품ID 입니다" });
 
@@ -19,10 +20,9 @@ module.exports.additem = async (req, res) => {
     //   .webp({ lossless: true })
     //   .resize({ width: 300, height: 250 });
     const item = new Item({
-      id: req.body.id,
+      id: imgKey,
       itemName: req.body.itemName,
       imgs: imgUrl,
-      webpImgs: null,
       price: req.body.price,
       category: req.body.category,
       brand: req.body.brand,

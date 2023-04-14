@@ -27,7 +27,7 @@ router.post(
   upload.single("sumFile"),
   function (req, res, next) {
     console.log(req.file);
-    const { category, type, itemName, price, brand, sale, id } = req.body;
+    const { category, type, itemName, price, brand, sale } = req.body;
     return next();
   },
   item.additem

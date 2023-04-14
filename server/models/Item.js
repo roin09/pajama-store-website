@@ -10,7 +10,6 @@ const itemSchema = mongoose.Schema({
     require: true,
   },
   imgs: String,
-  webpImgs: String,
   price: Number,
   category: String,
   brand: String,
