@@ -5,7 +5,7 @@ const itemSchema = mongoose.Schema({
     unique: true,
     require: true,
   },
-  name: {
+  itemName: {
     type: String,
     require: true,
   },
