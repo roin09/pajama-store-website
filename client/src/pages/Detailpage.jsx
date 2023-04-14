@@ -9,9 +9,8 @@ import { useEffect, useState } from "react";
 const Detailpage = (props) => {
   const { open, close, selectedItemInfo } = props;
   const item = {
-    name: selectedItemInfo.name,
-    imgdata: selectedItemInfo.imgdata,
-    imgurl: selectedItemInfo.imgurl,
+    itemName: selectedItemInfo.itemName,
+    id: selectedItemInfo.id,
     price: selectedItemInfo.price,
     brand: selectedItemInfo.brand,
     sale: selectedItemInfo.sale,
@@ -43,16 +42,23 @@ const Detailpage = (props) => {
             <Container onClick={(e) => e.stopPropagation()}>
               <ImgBox className="item">
                 <LazyLoadImage
-                  className="item-img"
-                  src={item.imgurl}
+                  alt={item.itemName}
                   effect="blur"
+                  className="item-img"
+                  height={250}
+                  width={300}
+                  src={
+                    process.env.REACT_APP_CLOUD_URL + item.id + "?quality=65"
+                  }
                 />
               </ImgBox>
               <InfoBox className="item">
                 <InfoDiv className="info-item info-brand">{item.brand}</InfoDiv>
-                <InfoDiv className="info-item info-name">{item.name}</InfoDiv>
+                <InfoDiv className="info-item info-name">
+                  {item.itemName}
+                </InfoDiv>
                 <InfoDiv className="info-item info-saleprice">
-                  {item.price}
+                  {item.price}sale
                 </InfoDiv>
                 <InfoDiv className="info-item">
                   <SaleDiv className="price-item info-sale">{sale}%</SaleDiv>

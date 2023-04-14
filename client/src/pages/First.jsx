@@ -18,9 +18,8 @@ const First = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [content, setContent] = useState(null);
   const [selectedItemInfo, setselectedItemInfo] = useState({
-    name: "",
-    imgurl: "",
-    imgdata: "",
+    id: null,
+    itemName: "",
     price: null,
     brand: "",
     sale: null,
@@ -53,9 +52,8 @@ const First = (props) => {
 
   const handleDetailModal = async (data) => {
     setselectedItemInfo({
-      name: data.name,
-      imgurl: data.imgs,
-      imgdata: data.id,
+      id: data.id,
+      itemName: data.itemName,
       price: data.price,
       brand: data.brand,
       sale: data.sale,
@@ -117,7 +115,7 @@ const First = (props) => {
           ? filteredItems?.map((data, idx) => {
               return (
                 <SwiperSlide key={idx}>
-                  <LazyLoadImage
+                  {/* <LazyLoadImage
                     className="swiper-img"
                     effect="blur"
                     key={idx}
@@ -125,6 +123,18 @@ const First = (props) => {
                     height={250}
                     width={300}
                     src={data.imgs + "?quality=65"}
+                    onClick={() => handleDetailModal(data)}
+                  /> */}
+
+                  <LazyLoadImage
+                    alt={idx}
+                    effect="blur"
+                    className="swiper-img"
+                    height={250}
+                    width={300}
+                    src={
+                      process.env.REACT_APP_CLOUD_URL + data.id + "?quality=65"
+                    }
                     onClick={() => handleDetailModal(data)}
                   />
                 </SwiperSlide>

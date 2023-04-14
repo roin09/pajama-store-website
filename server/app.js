@@ -11,6 +11,7 @@ var userRouter = require("./routes/user");
 var authRouter = require("./routes/auth");
 var adminRouter = require("./routes/admin");
 var favicon = require("serve-favicon");
+var CWebp = require("cwebp");
 const mongoose = require("mongoose");
 require("dotenv").config();
 // const redis = require("redis");
