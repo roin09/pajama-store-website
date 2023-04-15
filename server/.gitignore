@@ -37,7 +37,6 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
-build/
 
 # Dependency directories
 node_modules/
@@ -139,3 +138,6 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/node
+
+# aws key pair rsa
+aws/
