@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const createTokenInstance = (options) => {
-  const root = process.env.REACT_APP_URL;
-
+  // const root = process.env.REACT_APP_URL;
+  const root = process.env.REACT_APP_DEPLOY_URL;
   const newOptions = {
     ...options,
     baseURL: root,
