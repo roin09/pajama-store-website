@@ -47,7 +47,8 @@ jobs:
       - name: build client files
         working-directory: ./client
         run: |
-          yarn install --immutable --immutable-cache --check-cache
+          npm install -g yarn
+          yarn install
           yarn build
 
       - name: zip distributions
