@@ -2,9 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/build
+    destination: /home/ubuntu/moonlight
     overwrite: yes
-    file_exists_behavior: OVERWRITE
+file_exists_behavior: OVERWRITE
 
 permissions:
   - object: /home/ubuntu
