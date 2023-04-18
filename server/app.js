@@ -55,7 +55,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: ["http://localhost:3000",PORT]
+    origin: ["http://localhost:3000","ec2-13-209-170-4.ap-northeast-2.compute.amazonaws.com:8080"]
     credentials: true, // 모든 출처 허용 옵션. true 를 써도 된다.
   })
 );
