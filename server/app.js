@@ -55,7 +55,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000",PORT]
     credentials: true, // 모든 출처 허용 옵션. true 를 써도 된다.
   })
 );
@@ -66,28 +66,28 @@ const options = { maxAge: "1d", immutable: true };
 app.use("/admin", adminRouter);
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
-app.use(favicon(path.join(__dirname, "../client/public", "favicon.ico")));
-app.get("/react", function (req, res) {
-  res.sendFile(path.join(__dirname, "../client/public/index.html"));
-  res.end();
+app.use(favicon(path.join(__dirname, "../client/build", "favicon.ico")));
+// app.get("/react", function (req, res) {
+//   res.sendFile(path.join(__dirname, "../client/public/index.html"));
+//   res.end();
+// });
+
+// app.use(
+//   "/react",
+//   express.static(path.join(__dirname, "../client/public"), options)
+// );
+
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"), options);
 });
+app.use(express.static(path.join(__dirname, "../client/build"), options));
 
-app.use(
-  "/react",
-  express.static(path.join(__dirname, "../client/public"), options)
-);
-
-// app.get("/", function (req, res) {
-//   res.sendFile(path.join(__dirname, "../client/build/index.html"), options);
-// });
-// app.use(express.static(path.join(__dirname, "../client/build"), options));
-
-// app.get("*", function (req, res) {
-//   res.sendFile(path.join(__dirname, "../client/build/index.html"));
-// });
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
 // catch 404 and forward to error handler
 app.use("*", function (req, res) {
-  express.static(path.join(__dirname, "../client/public"), options);
+  express.static(path.join(__dirname, "../client/build"), options);
 });
 app.use(function (req, res, next) {
   next(createError(404));
