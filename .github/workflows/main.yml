@@ -1,0 +1,72 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node-version: [18.12.0]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - name: Checkout source code.
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: create server env file
+        working-directory: ./server
+        run: |
+          pwd
+          touch .env
+          echo PORT=${{ secrets.PORT }} >> .env
+          echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
+          echo SECRET_KEY=${{secrets.SECRET_KEY}}   >> .env
+          cat .env
+
+      - name: create client env file
+        working-directory: ./client
+        run: |
+          pwd
+          touch .env
+          echo REACT_APP_NAME_REGEX=${{secrets.REACT_APP_NAME_REGEX}}>> .env
+          echo REACT_APP_PASSWORD_REGEX=${{secrets.REACT_APP_PASSWORD_REGEX}}  >> .env
+          echo REACT_APP_DEPLOY_URL=${{secrets.REACT_APP_DEPLOY_URL}}  >> .env
+          cat .env
+    
+      - name: build client files
+        working-directory: ./client
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+
+      - name: zip distributions
+        run: zip -r moonlight.zip ./client/dist ./server ./appspec.yml ./scripts
+
+      - name: AWS configure credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      
+      - name: upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./moonlight.zip s3://moonlight-server/archive/
+
+      - name: deploy with AWS codeDeploy
+        run: aws deploy create-deployment
+          --application-name moonlight-deploy
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name deploy-group
+          --s3-location bucket=moonlight-server,bundleType=zip,key=archive/moonlight.zip
