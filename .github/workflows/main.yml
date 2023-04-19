@@ -51,7 +51,7 @@ jobs:
           yarn build
 
       - name: zip distributions
-        run: zip -r moonlight.zip ./client/dist ./server ./appspec.yml ./scripts
+        run: zip -r moonlight.zip ./client/build ./server ./appspec.yml ./scripts
 
       - name: AWS configure credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
