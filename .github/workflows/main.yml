@@ -69,4 +69,6 @@ jobs:
           --application-name moonlight-deploy
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name deploy-group
+          --ignore-application-stop-failures 
           --s3-location bucket=moonlight-server,bundleType=zip,key=archive/moonlight.zip
+          --description "Ignore ApplicationStop failures due to broken script"
