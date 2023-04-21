@@ -25,47 +25,40 @@ jobs:
       - name: create server env file
         working-directory: ./server
         run: |
+          pwd
           touch .env
-          echo "PORT=${{ secrets.PORT }}" >> .env
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
-          echo "SECRET_KEY=${{secrets.SECRET_KEY}}" >> .env
+          echo PORT=${{ secrets.PORT }} >> .env
+          echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
+          echo SECRET_KEY=${{secrets.SECRET_KEY}} >> .env
           cat .env
-        env:
-          PORT: ${{ secrets.PORT }}
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          SECRET_KEY: ${{secrets.SECRET_KEY}}
-          
-      - name: create client env file
-        working-directory: ./client
-        run: |
-          touch .env
-          echo "REACT_APP_NAME_REGEX=${{secrets.REACT_APP_NAME_REGEX}}" >> .env
-          echo "REACT_APP_PASSWORD_REGEX=${{secrets.REACT_APP_PASSWORD_REGEX}}" >> .env
-          echo "REACT_APP_DEPLOY_URL=${{secrets.REACT_APP_DEPLOY_URL}}" >> .env
-          cat .env
-        env:
-          REACT_APP_NAME_REGEX: ${{secrets.REACT_APP_NAME_REGEX}}
-          REACT_APP_PASSWORD_REGEX: ${{secrets.REACT_APP_PASSWORD_REGEX}}
-          REACT_APP_DEPLOY_URL: ${{secrets.REACT_APP_DEPLOY_URL}}
-          
 
       - name: build client files
         working-directory: ./client
         run: |
+          pwd
           npm install -g yarn
           yarn install
           yarn build
+          
+      - name: create client env file
+        working-directory: ./client/build
+        run: |
+          pwd
+          touch .env
+          echo REACT_APP_NAME_REGEX=${{secrets.REACT_APP_NAME_REGEX}} >> .env
+          echo REACT_APP_PASSWORD_REGEX=${{secrets.REACT_APP_PASSWORD_REGEX}} >> .env
+          echo REACT_APP_DEPLOY_URL=${{secrets.REACT_APP_DEPLOY_URL}} >> .env
+          cat .env
 
       - name: zip distributions
-        run: zip -r moonlight.zip ./client/build ./server ./appspec.yml ./scripts
+        run: |
+          pwd
+          zip -r moonlight.zip ./client/build ./server ./appspec.yml ./scripts
+          ls -l moonlight.zip
 
       - name: AWS configure credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-        env:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
