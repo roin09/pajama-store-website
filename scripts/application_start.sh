@@ -3,5 +3,5 @@
 REPOSITORY=/home/ubuntu/build/server
 
 cd $REPOSITORY
-pm2 stop all
-pm2 start app.js
+sudo pm2 stop all
+sudo pm2 start app.js
