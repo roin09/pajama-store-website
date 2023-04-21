@@ -66,8 +66,8 @@ jobs:
 
       - name: deploy with AWS codeDeploy
         run: aws deploy create-deployment
-          --application-name moonlight-deploy
-          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --application-name CodeDeployDemo
+          --deployment-config-name CodeDeployDefault.OneAtATime
           --deployment-group-name deploy-group
           --ignore-application-stop-failures 
           --s3-location bucket=moonlight-server,bundleType=zip,key=archive/moonlight.zip
