@@ -53,7 +53,7 @@ jobs:
       - name: zip distributions
         run: |
           pwd
-          zip -r moonlight.zip ./client/build ./server ./appspec.yml ./scripts
+          zip -r moonlight.zip ./client/build ./server ./appspec.yml ./scripts ./client/build/.env ./server/.env
           ls -l moonlight.zip
 
       - name: AWS configure credentials
