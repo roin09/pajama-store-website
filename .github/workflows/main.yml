@@ -1,7 +1,6 @@
 name: deploy
 
 on:
-
   pull_request:
     branches: [main]
 
@@ -42,7 +41,7 @@ jobs:
           echo REACT_APP_PASSWORD_REGEX=${{secrets.REACT_APP_PASSWORD_REGEX}}  >> .env
           echo REACT_APP_DEPLOY_URL=${{secrets.REACT_APP_DEPLOY_URL}}  >> .env
           cat .env
-    
+
       - name: build client files
         working-directory: ./client
         run: |
@@ -60,15 +59,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      
       - name: upload to S3
         run: aws s3 cp --region ap-northeast-2 ./moonlight.zip s3://moonlight-server/archive/
+
+      - name: deploy push
+        run: aws deploy push
+          --application-name moonlight-deploy
+          --description "This is a revision for the application moonlight"
+          --ignore-hidden-files
+          --s3-location s3://moonlight-server/archive/moonlight.zip
+          --source .
 
       - name: deploy with AWS codeDeploy
         run: aws deploy create-deployment
           --application-name moonlight-deploy
           --deployment-config-name CodeDeployDefault.OneAtATime
           --deployment-group-name deploy-group
-          --ignore-application-stop-failures 
+          --ignore-application-stop-failures
           --s3-location bucket=moonlight-server,bundleType=zip,key=archive/moonlight.zip
           --description "Ignore ApplicationStop failures due to broken script"
