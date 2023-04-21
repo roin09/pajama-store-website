@@ -57,6 +57,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      "http://localhost:4000",
+      "http://localhost:8080",
       "http://ec2-13-209-170-4.ap-northeast-2.compute.amazonaws.com",
       "https://ec2-13-209-170-4.ap-northeast-2.compute.amazonaws.com",
       "ec2-13-209-170-4.ap-northeast-2.compute.amazonaws.com",
@@ -87,9 +89,6 @@ app.get("/", function (req, res) {
 });
 app.use(express.static(path.join(__dirname, "../client/build"), options));
 
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
 // catch 404 and forward to error handler
 app.use("*", function (req, res) {
   express.static(path.join(__dirname, "../client/build"), options);

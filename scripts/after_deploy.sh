@@ -1,5 +1,5 @@
 #!/bin/bash
-REPOSITORY=/home/ubuntu/moonlight/server
+REPOSITORY=/home/ubuntu/build/server
 
 cd $REPOSITORY
 
