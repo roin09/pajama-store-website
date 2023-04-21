@@ -25,22 +25,29 @@ jobs:
       - name: create server env file
         working-directory: ./server
         run: |
-          pwd
           touch .env
-          echo PORT=${{ secrets.PORT }} >> .env
-          echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
-          echo SECRET_KEY=${{secrets.SECRET_KEY}}   >> .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+          echo "SECRET_KEY=${{secrets.SECRET_KEY}}" >> .env
           cat .env
-
+        env:
+          PORT: ${{ secrets.PORT }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          SECRET_KEY: ${{secrets.SECRET_KEY}}
+          
       - name: create client env file
         working-directory: ./client
         run: |
-          pwd
           touch .env
-          echo REACT_APP_NAME_REGEX=${{secrets.REACT_APP_NAME_REGEX}}>> .env
-          echo REACT_APP_PASSWORD_REGEX=${{secrets.REACT_APP_PASSWORD_REGEX}}  >> .env
-          echo REACT_APP_DEPLOY_URL=${{secrets.REACT_APP_DEPLOY_URL}}  >> .env
+          echo "REACT_APP_NAME_REGEX=${{secrets.REACT_APP_NAME_REGEX}}" >> .env
+          echo "REACT_APP_PASSWORD_REGEX=${{secrets.REACT_APP_PASSWORD_REGEX}}" >> .env
+          echo "REACT_APP_DEPLOY_URL=${{secrets.REACT_APP_DEPLOY_URL}}" >> .env
           cat .env
+        env:
+          REACT_APP_NAME_REGEX: ${{secrets.REACT_APP_NAME_REGEX}}
+          REACT_APP_PASSWORD_REGEX: ${{secrets.REACT_APP_PASSWORD_REGEX}}
+          REACT_APP_DEPLOY_URL: ${{secrets.REACT_APP_DEPLOY_URL}}
+          
 
       - name: build client files
         working-directory: ./client
@@ -58,17 +65,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
+        env:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
       - name: upload to S3
         run: aws s3 cp --region ap-northeast-2 ./moonlight.zip s3://moonlight-server/archive/
-
-      - name: deploy push
-        run: aws deploy push
-          --application-name moonlight-deploy
-          --description "This is a revision for the application moonlight"
-          --ignore-hidden-files
-          --s3-location s3://moonlight-server/archive/moonlight.zip
-          --source .
 
       - name: deploy with AWS codeDeploy
         run: aws deploy create-deployment
