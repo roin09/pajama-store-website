@@ -59,6 +59,7 @@ app.use(
       "http://localhost:3000",
       "http://ec2-13-209-170-4.ap-northeast-2.compute.amazonaws.com",
       "https://ec2-13-209-170-4.ap-northeast-2.compute.amazonaws.com",
+      "ec2-13-209-170-4.ap-northeast-2.compute.amazonaws.com",
     ],
     credentials: true,
   })
