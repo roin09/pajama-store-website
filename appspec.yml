@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/moonlight
+    destination: /home/ubuntu/build
 file_exists_behavior: OVERWRITE
 
 permissions:
@@ -12,7 +12,19 @@ permissions:
     group: ubuntu
 
 hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      timeout: 300
+      runas: ubuntu
+  # During the AfterInstall deployment lifecycle event, run the commands
+  #   in the script specified in "location".
   AfterInstall:
-    - location: scripts/after-deploy.sh
+    - location: scripts/after_install.sh
+      timeout: 300
+      runas: ubuntu
+  # During the ApplicationInstall deployment lifecycle event, run the commands
+  #   in the script specified in "location".
+  ApplicationStart:
+    - location: scripts/application_start.sh
       timeout: 300
       runas: ubuntu
