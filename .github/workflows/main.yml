@@ -30,7 +30,15 @@ jobs:
           echo PORT=${{ secrets.PORT }} >> .env
           echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
           echo SECRET_KEY=${{secrets.SECRET_KEY}} >> .env
+          echo "cat .env"
           cat .env
+
+          echo "ls -a ."
+          ls -a .
+
+          echo "ls -a ${{ github.workspace }}"
+          ls -a ${{ github.workspace }}
+        shell: bash
 
       - name: build client files
         working-directory: ./client
@@ -47,8 +55,16 @@ jobs:
           touch .env
           echo REACT_APP_NAME_REGEX=${{secrets.REACT_APP_NAME_REGEX}} >> .env
           echo REACT_APP_PASSWORD_REGEX=${{secrets.REACT_APP_PASSWORD_REGEX}} >> .env
-          echo REACT_APP_DEPLOY_URL=${{secrets.REACT_APP_DEPLOY_URL}} >> .env
+          echo REACT_APP_DEPLOY_URL=${{secrets.REACT_APP_DEPLOY_URL}} >> .env 
+          echo "cat .env"
           cat .env
+
+          echo "ls -a ."
+          ls -a .
+
+          echo "ls -a ${{ github.workspace }}"
+          ls -a ${{ github.workspace }}
+        shell: bash
 
       - name: zip distributions
         run: |
