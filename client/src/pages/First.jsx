@@ -6,9 +6,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "./first.css";
-//Lazy loading
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+
 // Swiper에서 가져올 모듈들
 import { EffectCoverflow, Pagination } from "swiper";
 import Detailpage from "./Detailpage";
@@ -115,25 +113,13 @@ const First = (props) => {
           ? filteredItems?.map((data, idx) => {
               return (
                 <SwiperSlide key={idx}>
-                  {/* <LazyLoadImage
-                    className="swiper-img"
-                    effect="blur"
-                    key={idx}
+                  <img
                     alt={idx}
-                    height={250}
-                    width={300}
-                    src={data.imgs + "?quality=65"}
-                    onClick={() => handleDetailModal(data)}
-                  /> */}
-
-                  <LazyLoadImage
-                    alt={idx}
-                    effect="blur"
                     className="swiper-img"
-                    height={250}
-                    width={300}
                     src={
-                      process.env.REACT_APP_CLOUD_URL + data.id + "?quality=65"
+                      process.env.REACT_APP_CLOUD_URL +
+                      data.id +
+                      "?quality=65&height=250&width=300"
                     }
                     onClick={() => handleDetailModal(data)}
                   />
