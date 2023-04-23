@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //Lazy loading
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+
 import { DefaultBtn } from "../components/DefaultBtn";
 import { useEffect, useState } from "react";
 const Detailpage = (props) => {
@@ -41,14 +40,13 @@ const Detailpage = (props) => {
           <main>
             <Container onClick={(e) => e.stopPropagation()}>
               <ImgBox className="item">
-                <LazyLoadImage
+                <img
                   alt={item.itemName}
-                  effect="blur"
                   className="item-img"
-                  height={250}
-                  width={300}
                   src={
-                    process.env.REACT_APP_CLOUD_URL + item.id + "?quality=65"
+                    process.env.REACT_APP_CLOUD_URL +
+                    item.id +
+                    "?quality=65&height=250&width=300"
                   }
                 />
               </ImgBox>
